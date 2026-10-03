@@ -17,7 +17,7 @@ async def review_chapter(
     *,
     previous: EditorVerdict | None = None,
 ) -> EditorVerdict:
-    new_terms, _ = chapter_terms(outline, number)
+    new_terms, known_terms = chapter_terms(outline, number)
     history = ""
     if previous:
         raised = "\n".join(f'- [{i.severity}] {i.problem} ("{i.quote}")' for i in previous.issues)
@@ -28,6 +28,7 @@ async def review_chapter(
         tone=deps.cfg.brief.tone,
         style_guide=style_guide_text(outline),
         new_terms=new_terms,
+        known_terms=known_terms,
         history=history,
     )
     emit("agent_start", "Reviewing language and tone", agent="editor", chapter=number)
