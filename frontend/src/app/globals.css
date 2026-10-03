@@ -78,7 +78,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 
   --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --animate-node-pulse: node-pulse 1.8s var(--ease-out-soft) infinite;
   --animate-fade-in: fade-in 240ms var(--ease-out-soft) both;
   --animate-station-ping: station-ping 1.6s var(--ease-out-soft) infinite;
   --animate-dash-flow: dash-flow 0.9s linear infinite;
@@ -199,16 +198,6 @@
   --sidebar-accent-foreground: #f5f5f3;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #3fc0ae;
-}
-
-@keyframes node-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-color, var(--primary)) 45%, transparent);
-  }
-  60% {
-    box-shadow: 0 0 0 10px color-mix(in oklab, var(--pulse-color, var(--primary)) 0%, transparent);
-  }
 }
 
 @keyframes station-ping {
