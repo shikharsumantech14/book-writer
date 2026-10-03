@@ -2,10 +2,10 @@ import { CircleAlert, CircleCheck, CircleX } from "lucide-react"
 
 import { StatusBadge } from "@/components/status-badge"
 import type { ChapterGrade, Scorecard, ScoreCheck } from "@/lib/api"
-import { pct, titleCase } from "@/lib/format"
+import { titleCase } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
-const RULES: Record<string, string> = {
+export const RULES: Record<string, string> = {
   chapter_count: "Chapter count",
   word_count: "Length within the brief",
   flowing_prose: "Prose only: no lists or headings",
@@ -66,7 +66,7 @@ function ScoreBars({ scores }: { scores: Record<string, number> }) {
 function ChapterCard({ grade }: { grade: ChapterGrade }) {
   const m = grade.metrics
   return (
-    <div className="space-y-4 rounded-xl border bg-card p-5 shadow-xs">
+    <div className="space-y-4 rounded-2xl border bg-card p-5 shadow-xs">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-xs font-medium text-muted-foreground">Chapter {grade.number}</div>
@@ -112,48 +112,11 @@ function ChapterCard({ grade }: { grade: ChapterGrade }) {
   )
 }
 
-export function ScorecardView({ card }: { card: Scorecard }) {
-  const chapters = card.chapters
-  const supported = chapters.reduce((s, c) => s + c.metrics.claims_supported, 0)
-  const checked = chapters.reduce((s, c) => s + c.metrics.claims_checked, 0)
+/** One card per chapter: its checks with the measured values, the editor's scores and any warnings. */
+export function ChapterCards({ card }: { card: Scorecard }) {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-6 rounded-xl border bg-card p-5 shadow-xs">
-        <div className="flex items-center gap-3">
-          {card.passed ? (
-            <CircleCheck className="size-10 text-good" aria-hidden />
-          ) : (
-            <CircleX className="size-10 text-critical" aria-hidden />
-          )}
-          <div>
-            <div className="text-xl font-semibold">{card.passed ? "Follows the brief" : "Breaks the brief"}</div>
-            <div className="text-sm text-muted-foreground">
-              Graded by code, not by a model{card.partial_run ? " · partial run" : ""}
-            </div>
-          </div>
-        </div>
-        <div className="ml-auto grid grid-cols-2 gap-x-8 gap-y-1 text-sm sm:grid-cols-4">
-          <div>
-            <div className="text-xs text-muted-foreground">Words</div>
-            <div className="tabular font-semibold">{card.book.metrics.words.toLocaleString()}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">References</div>
-            <div className="tabular font-semibold">{card.book.metrics.references}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Official sources</div>
-            <div className="tabular font-semibold">{pct(card.book.metrics.official_share)}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Claims supported</div>
-            <div className="tabular font-semibold">
-              {supported}/{checked}
-            </div>
-          </div>
-        </div>
-      </div>
-      {chapters.map((g) => (
+    <div className="space-y-4">
+      {card.chapters.map((g) => (
         <ChapterCard key={g.number} grade={g} />
       ))}
     </div>
