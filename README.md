@@ -14,8 +14,9 @@ scorecard passed. Chapters 2 and 3 carry one warning each: the Editor's last sty
 because its send-back budget ran out. The run's [event log](docs/sample-output/events.jsonl) and
 [report](docs/sample-output/run_report.json) are committed next to it.
 
-**Status:** the agent engine, CLI, research MCP server and tests are done (milestone M1). The FastAPI service
-and the live dashboard come next. The full design, milestones and cost plan are in [docs/PLAN.md](docs/PLAN.md).
+**Status:** the agent engine, CLI, research MCP server, HTTP API with live streaming and tests are done
+(milestones M1 and M2). The live dashboard comes next. The full design, milestones and cost plan are in
+[docs/PLAN.md](docs/PLAN.md).
 
 ## Quick start
 
@@ -39,8 +40,17 @@ designed model routing. Each run writes to `backend/data/runs/<run_id>/`:
 | `events.jsonl` | Every agent step, tool call and model call, in order |
 | `run_report.json` | Status, cost per agent, model and chapter, and the scorecard |
 
-`uv run bookwriter report <run_id>` prints a run's cost table and scorecard; `uv run pytest` runs the tests
-without any API key.
+Other commands, none of which call a model:
+
+| Command | What it does |
+|---|---|
+| `uv run bookwriter report <run_id>` | Cost table and scorecard of a finished run |
+| `uv run bookwriter replay <run_id> --speed 20` | Replays a recorded run in the terminal with its original pacing |
+| `uv run bookwriter serve` | Starts the HTTP API; interactive docs at http://localhost:8000/docs |
+| `uv run bookwriter graph` | Prints the agent graph as Mermaid |
+| `uv run pytest` | Runs the tests |
+
+The committed sample run works with all of them, e.g. `uv run bookwriter replay ../docs/sample-output/events.jsonl`.
 
 ## How it works
 
@@ -69,6 +79,8 @@ on the fastest. Routing, effort, prices and loop budgets all live in
 ### Agent graph
 
 The planner fans out one chapter subgraph per chapter, run in parallel. Dotted arrows are router decisions.
+`outline_review` is human in the loop: when a run asks for it, the graph pauses after the Planner until a
+person approves, edits or rejects the outline, then continues from its checkpoint.
 This diagram is generated from the compiled LangGraph graph (`uv run bookwriter graph`), and CI fails if it
 drifts from the code.
 
@@ -82,13 +94,15 @@ config:
 graph TD;
 	__start__([<p>__start__</p>]):::first
 	planner(planner)
+	outline_review(outline_review)
 	chief_editor(chief_editor)
 	assembler(assembler)
 	__end__([<p>__end__</p>]):::last
 	__start__ --> planner;
 	chapter\3asafety_net --> chief_editor;
 	chief_editor --> assembler;
-	planner -.-> chapter\3a__start__;
+	outline_review -.-> chapter\3a__start__;
+	planner --> outline_review;
 	assembler --> __end__;
 	subgraph chapter
 	chapter\3a__start__(<p>__start__</p>)
@@ -172,6 +186,26 @@ quotes; one batched fact-check call per chapter; a disk cache so re-runs don't r
 Building the project with Claude Code is measured too: [docs/DEV_COST.md](docs/DEV_COST.md), generated from
 the session transcripts by [`scripts/dev_usage.py`](scripts/dev_usage.py).
 
+## HTTP API
+
+`uv run bookwriter serve` starts a FastAPI service for the dashboard. A run started through the API runs in the
+background, and its events stream live as Server-Sent Events.
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /runs` | Start a run: profile, chapters, cost cap, human review, brief and budget overrides |
+| `GET /runs` · `GET /runs/{id}` | Run history; status, cost so far, scorecard, the outline awaiting review |
+| `GET /runs/{id}/events` | Live event stream (SSE), resumable from any event: `?after=N` or `Last-Event-ID` |
+| `POST /runs/{id}/resume` | Approve, edit or reject the outline of a run waiting for review |
+| `POST /runs/{id}/cancel` | Stop a run; its report is still written |
+| `GET /runs/{id}/book.md`, `book.html`, `report` | The outputs |
+| `GET /graph` | Agent graph nodes and edges, exported from LangGraph, plus the Mermaid source |
+| `GET /config` · `GET /estimate` | Brief, routing per profile and prices; pre-run cost estimate from measured runs |
+
+Finished runs stream from their recording, and `?speed=N` replays them with their original pacing, N times
+faster. The dashboard can therefore be built and demonstrated against recorded runs, including the committed
+sample, without spending anything. One run at a time: a second `POST /runs` while one is going returns 409.
+
 ## Use the research tools from Claude (MCP)
 
 The Researcher and Fact-checker reach the web through an MCP server
@@ -211,7 +245,10 @@ backend/
     mcp_servers/         the research MCP server
     llm.py, pricing.py   the one place that calls Claude; token and cost accounting
     runner.py, cli.py    run a book and record it; the bookwriter command
+    api/                 FastAPI service: runs, live event stream, outline review
+    store.py             reads run folders back (runs are folders, not database rows)
     scorecard.py         grades a book against the brief
+    estimate.py          pre-run cost estimate from measured runs
   tests/                 unit tests and a fake-LLM end-to-end run (no API cost)
 docs/
   PLAN.md                the approved design and milestones

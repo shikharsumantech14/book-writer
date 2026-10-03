@@ -402,7 +402,11 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 **Showcase run (the submitted book):** $2.93 in 8 minutes, under the $3-4 estimate: Writer $1.40, Researcher $0.65, Fact-checker $0.34, Editor $0.22, Planner $0.17, Chief Editor $0.09, tagger $0.05. Scorecard passed; 29 of 29 claims supported; chapters 2 and 3 shipped with the Editor's last style notes unapplied. It replaced the `dev` book in `docs/sample-output/`. Total API spend so far: $6.35.
 
-**Next:** M2 (service) and M3 (dashboard).
+**M2 (service) is done.** FastAPI app (`bookwriter serve`) with every endpoint in section 9: runs, a resumable SSE event stream, outline review (LangGraph `interrupt()` with SQLite checkpoints), cancel, outputs, `GET /graph` exported from LangGraph, config and a pre-run estimate (median of measured runs, a prior before any history). `bookwriter replay` replays a recording in the terminal; `?speed=N` on the event stream replays it for the dashboard. 80 tests, including the API end to end with the fake LLM.
+
+One deliberate change from section 9: runs and events are not copied into SQLite tables. A run is its folder (`events.jsonl`, `run_report.json`, the book), which the CLI, the API and the committed sample already share; a second copy in a database would be a second source of truth to keep in step. SQLite holds only the LangGraph checkpoints. The runs list is read from the folders; live runs are served from memory.
+
+**Next:** M3 (dashboard), built against recorded runs.
 
 ---
 
