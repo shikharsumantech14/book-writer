@@ -436,3 +436,80 @@ One deliberate change from section 9: runs and events are not copied into SQLite
 | Search provider | **Tavily** / Claude's built-in web search (one key fewer, weaker MCP story) |
 | Book export | **Markdown + HTML** (PDF via browser print) / native PDF |
 | Chapter parallelism | **3 in parallel** / sequential (simpler event timeline, slower) |
+
+---
+
+## 18. M6: Redesign of the dashboard and the README visuals (proposed, 4 October)
+
+**Why.** The dashboard works but looks like a default component kit, and the agent graph (generic boxes and thin
+lines) does not show what is really happening: three chapters moving through the same stations in parallel, and
+reviewers sending work back. The README's diagrams are plain Mermaid, and one screenshot (a citation card covering
+the text it belongs to) reads as a bug. The aim is a dashboard that explains the system at a glance, and README
+visuals a non-technical reader understands.
+
+### 18.1 The agent flow becomes an assembly line
+
+The generic node graph is replaced by a swimlane view: one lane per chapter, the agents as stations along it, the
+book-level agents at both ends.
+
+```
+             ┌ Chapter 1  ●Research ─ ●Write ─ ●Lint ─ ◉Edit ─ ○Fact-check ─ ○Safety net ┐
+ ●Planner ─► ├ Chapter 2  ●Research ─ ◉Write ─ ○Lint ─ ○Edit ─ ○Fact-check ─ ○Safety net ┤ ─► ○Chief Editor ─► ○Book
+ ●Review     └ Chapter 3  ◉Research ─ ○Write ─ ○Lint ─ ○Edit ─ ○Fact-check ─ ○Safety net ┘
+                                      ╰──── ↩ ×2 "2 must-fix" ────╯
+   ● done   ◉ working now (pulses in the agent's colour)   ○ not reached yet
+```
+
+- Each send-back draws a curved arc from the reviewer back to the Writer (or the Researcher), labelled with how
+  often it happened and the latest reason; the arc animates when it happens.
+- Stations show their count (writer passes, reviews) and the model they run on.
+- Still derived from `GET /graph`: station order and the possible loops come from the LangGraph graph, so the
+  view cannot drift from the code.
+
+### 18.2 A run timeline
+
+New, under the assembly line: a time chart with one row per chapter (plus the book row), coloured bars for each
+agent's turn, markers for send-backs. It shows at a glance that chapters ran in parallel, where time went, and how
+many rounds each needed. Built from the event log; works live and in replay.
+
+### 18.3 Visual design, everywhere
+
+- **Identity:** a display serif for titles (the product writes books), Inter for the interface, a refined palette
+  built on the existing tokens, layered surfaces with depth, subtle texture, and motion that explains (stations
+  pulse, numbers count up, arcs draw). Light and dark both designed, not inverted.
+- **Runs page:** a hero that says what this is in one sentence, a featured-book card (the latest complete book with
+  its scorecard and cost), then the run history with inline cost bars.
+- **Run page:** a header with a progress bar across all stations and a cumulative-cost sparkline; the assembly line;
+  the timeline; an activity feed with filter chips per chapter and clear outcome cards (approved, sent back with the
+  must-fix count, evidence rejected).
+- **Book reader:** a book-like page with a chapter opener and drop cap. A citation no longer opens a card over the
+  text: hovering or clicking `[n]` highlights that source in the margin and opens its verified quote there.
+- **Report:** report cards per chapter with a large pass badge and the checks as a grid; cost adds spend over time.
+
+### 18.4 README visuals anyone can follow
+
+- A new **"How a book gets made"** illustration: the assembly line with each agent's icon, colour and one plain
+  sentence ("checks every fact against the page it came from"), and the loops in words.
+- A new **system diagram** drawn in the same style: dashboard, API, agent engine, research tools, Claude, the web,
+  storage, each with a one-line plain caption.
+- Both are pages in the dashboard (`/explain`), rendered with the same components and captured as PNGs, so the
+  README pictures and the product look the same. The Mermaid graph generated from code stays in
+  `docs/architecture.md`, still checked by a test.
+- A short plain-language "What is this?" opening at the top of the README; new screenshots of every screen.
+
+### 18.5 Scope and order
+
+1. Design tokens and type, app shell, shared components.
+2. Assembly line and timeline (the showpiece), then the run page around them.
+3. Runs, Book and Report pages.
+4. `/explain` illustrations, screenshots, README.
+5. Checks: lint, type-check, reducer tests, production build; every screen checked in light and dark and at phone
+   width; CI green.
+
+No backend changes and no API spend: everything is built and captured against the recorded runs. Estimated effort:
+one working session today, well before Monday's deadline. The current dashboard stays in git history.
+
+**Approved 4 October, with one change to 18.3:** each page gets the character of its job rather than one style for
+all. The **Run** page is a mission-control console (dark, glowing stations, live numbers). The **Book** page is
+editorial (paper, serif, a printed-book feel). The **Report** page is a data dashboard (KPIs, charts, a scorecard
+matrix). The Runs list and the `/explain` illustrations use a clean product style that ties them together.
