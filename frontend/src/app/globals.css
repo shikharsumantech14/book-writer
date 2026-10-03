@@ -335,6 +335,10 @@
   /* a printed page: paragraphs run on with an indent instead of a gap */
   .paper .prose-book p {
     margin: 0;
+    /* justified like a printed book; hyphenation keeps the word gaps even */
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
   }
   .paper .prose-book p:not(.drop-cap) {
     text-indent: 1.5em;
