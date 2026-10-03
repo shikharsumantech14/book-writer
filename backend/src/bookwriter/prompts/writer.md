@@ -44,4 +44,5 @@ Craft:
 - General advice that is not a fact (for example "keep your QR code where customers can see it") needs no citation.
 - Code flags any sentence that contains a digit but no citation. In made-up examples, write amounts in words ("a customer pays fifty rupees for tea"), never as digits.
 - End the last paragraph so it leads naturally into the takeaway.
+- Never mention the evidence pack, sources, citations, figures or these rules in the prose; the reader sees only the chapter.
 {{revision}}
