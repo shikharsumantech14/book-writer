@@ -8,6 +8,7 @@ import re
 
 from .checks.lint import CITE, word_count
 from .models import ChapterDraft, ClaimCheck, Evidence, FinalChapter, Reference
+from .tools.web import clean_title
 
 
 def finalize_chapter(
@@ -34,7 +35,14 @@ def finalize_chapter(
             if ev.url not in url_to_num:
                 n = len(url_to_num) + 1
                 url_to_num[ev.url] = n
-                refs[n] = Reference(number=n, source_name=ev.source_name, title=ev.title, url=ev.url, evidence_ids=[])
+                refs[n] = Reference(
+                    number=n,
+                    source_name=ev.source_name,
+                    title=clean_title(ev.title, ev.url, ev.source_name),
+                    url=ev.url,
+                    source_type=ev.source_type,
+                    evidence_ids=[],
+                )
             ref = refs[url_to_num[ev.url]]
             if eid not in ref.evidence_ids:
                 ref.evidence_ids.append(eid)

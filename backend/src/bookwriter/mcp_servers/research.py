@@ -72,6 +72,7 @@ async def read_page(url: str, focus: str) -> str:
             "publisher": doc.site_name,
             "published": doc.published,
             "source_type": web.classify_source(url, cfg),
+            "via": doc.via,
             "page_chars": len(doc.text),
             "passages": passages,
         },
@@ -91,7 +92,8 @@ async def verify_quote(url: str, quote: str) -> str:
 
 @mcp.tool()
 async def check_links(urls: list[str]) -> str:
-    """Check that each URL is reachable (HTTP status < 400 after redirects)."""
+    """Check that each URL works: HTTP status < 400 after redirects, or readable through the
+    extract route when the site blocks automated clients (403/406/429)."""
     return json.dumps(await web.check_links(urls))
 
 

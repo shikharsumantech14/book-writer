@@ -142,6 +142,7 @@ class PageDoc:
     content_type: str
     fetched_at: float
     error: str | None = None
+    via: str = "direct"  # "direct" (our HTTP client) or "extract" (Tavily Extract fallback)
 
 
 def _cache_path(url: str) -> Path:
@@ -153,12 +154,27 @@ def _cache_path(url: str) -> Path:
 
 _locks: dict[str, asyncio.Lock] = {}
 MIN_TEXT_CHARS = 400  # below this a page is almost always a JS shell or an error page
+# Status codes that usually mean "this client looks like a bot", not "this page is gone".
+# Official sites (RBI, NPCI) answer plain HTTP clients this way while serving people normally.
+BOT_BLOCK_STATUSES = {403, 406, 429}
+
+
+def needs_extract(doc: PageDoc) -> bool:
+    """Should we retry this page through Tavily Extract?"""
+    if doc.ok:
+        return len(doc.text) < MIN_TEXT_CHARS  # JavaScript shell or near-empty page
+    return doc.status in BOT_BLOCK_STATUSES
+
+
+def readable(doc: PageDoc) -> bool:
+    return doc.ok and len(doc.text) >= MIN_TEXT_CHARS
 
 
 async def fetch_page(url: str, *, use_cache: bool = True) -> PageDoc:
     """Fetch a URL and extract readable text (HTML via trafilatura, PDF via pypdf).
 
-    Falls back to Tavily Extract for pages that render poorly (JS-heavy sites).
+    Falls back to Tavily Extract for JavaScript shells and for anti-bot
+    responses (403/406/429). Only readable pages are cached.
     """
     path = _cache_path(url)
     lock = _locks.setdefault(url, asyncio.Lock())
@@ -166,9 +182,9 @@ async def fetch_page(url: str, *, use_cache: bool = True) -> PageDoc:
         if use_cache and path.exists():
             return PageDoc(**json.loads(path.read_text(encoding="utf-8")))
         doc = await _fetch_uncached(url)
-        if doc.ok and len(doc.text) < MIN_TEXT_CHARS:
+        if needs_extract(doc):
             doc = await _tavily_extract(url, doc) or doc
-        if doc.ok and len(doc.text) >= MIN_TEXT_CHARS:
+        if readable(doc):
             path.write_text(json.dumps(asdict(doc), ensure_ascii=False), encoding="utf-8")
         return doc
 
@@ -219,6 +235,8 @@ def _html_title(html: str) -> str:
 
 
 async def _tavily_extract(url: str, doc: PageDoc) -> PageDoc | None:
+    """Read the page through Tavily Extract. Returns the updated doc, or None if
+    the extract route did no better than the direct fetch."""
     key = get_settings().tavily_api_key
     if not key:
         return None
@@ -226,13 +244,62 @@ async def _tavily_extract(url: str, doc: PageDoc) -> PageDoc | None:
         from tavily import AsyncTavilyClient
 
         data = await AsyncTavilyClient(api_key=key).extract(urls=[url])
-        results = data.get("results") or []
-        if results and len(results[0].get("raw_content") or "") > len(doc.text):
-            doc.text = results[0]["raw_content"]
-            return doc
     except Exception:
         return None
-    return None
+    results = data.get("results") or []
+    text = (results[0].get("raw_content") or "") if results else ""
+    if len(text) < MIN_TEXT_CHARS or len(text) <= len(doc.text):
+        return None
+    doc.text = text
+    doc.title = doc.title or results[0].get("title") or ""
+    doc.site_name = doc.site_name or publisher_for(url)
+    doc.ok, doc.error, doc.via = True, None, "extract"
+    return doc
+
+
+# ------------------------------------------------------------------------ titles
+
+_TITLE_SEPARATORS = re.compile(r"\s+(?:\||-|–|—|::|·)\s+")
+# Short labels sites append to titles that don't spell out the publisher's name.
+_SITE_LABELS = {"pib", "et", "etbfsi", "businessline", "bbcnews", "news", "latestnews", "home"}
+
+
+def _squash(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+def _is_site_label(segment: str, url: str, source_name: str) -> bool:
+    seg = _squash(segment)
+    if not seg:
+        return True
+    host = domain_of(url)
+    stem = _squash(host.split(".")[0])
+    names = {_squash(source_name), _squash(publisher_for(url))} - {""}
+    return (
+        seg in _SITE_LABELS
+        or seg == _squash(host)
+        or (len(stem) >= 3 and stem in seg)
+        or any(len(n) >= 3 and (seg in n or n in seg) for n in names)
+    )
+
+
+def clean_title(title: str, url: str, source_name: str = "") -> str:
+    """Drop site labels from a page title: "UPI hits a record | Reuters" -> "UPI hits a record".
+
+    Only leading or trailing segments that name the site are removed, so a
+    title like "UPI - the backbone of payments" keeps its dash.
+    """
+    title = re.sub(r"\s+", " ", title or "").strip()
+    parts = _TITLE_SEPARATORS.split(title)
+    seps = _TITLE_SEPARATORS.findall(title)
+    while len(parts) > 1 and _is_site_label(parts[-1], url, source_name):
+        parts.pop()
+        seps.pop()
+    while len(parts) > 1 and _is_site_label(parts[0], url, source_name):
+        parts.pop(0)
+        seps.pop(0)
+    out = parts[0] + "".join(sep + part for sep, part in zip(seps, parts[1:], strict=True))
+    return out.strip() or title
 
 
 # ---------------------------------------------------------------------- passages
@@ -311,18 +378,22 @@ def find_quote(text: str, quote: str) -> dict:
 
 
 async def check_link(url: str, client: httpx.AsyncClient | None = None) -> dict:
+    """A link is working if it answers HTTP < 400, or if it blocks bots (403/406/429)
+    but the page is readable through the extract route, as it is for a person in a browser."""
+
     async def _do(c: httpx.AsyncClient) -> dict:
         try:
             r = await c.get(url)
-            return {
-                "url": url,
-                "ok": r.status_code < 400,
-                "status": r.status_code,
-                "final_url": str(r.url),
-                "error": None,
-            }
+            out = {"url": url, "ok": r.status_code < 400, "status": r.status_code, "final_url": str(r.url)}
+            out |= {"error": None, "via": "direct"}
         except Exception as e:
-            return {"url": url, "ok": False, "status": None, "final_url": None, "error": f"{type(e).__name__}: {e}"}
+            out = {"url": url, "ok": False, "status": None, "final_url": None}
+            out |= {"error": f"{type(e).__name__}: {e}", "via": "direct"}
+        if not out["ok"] and out["status"] in BOT_BLOCK_STATUSES:
+            doc = await fetch_page(url)  # usually served from the cache the Researcher filled
+            if readable(doc):
+                out |= {"ok": True, "via": doc.via, "error": None}
+        return out
 
     if client:
         return await _do(client)
