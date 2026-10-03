@@ -1,0 +1,1840 @@
+{
+  "run_id": "20261003-161416-9d9f",
+  "status": "completed",
+  "error": null,
+  "traceback": null,
+  "profile": "dev",
+  "routing": {
+    "planner": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "medium"
+    },
+    "researcher": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "low"
+    },
+    "writer": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "low",
+      "revision_effort": "medium"
+    },
+    "editor": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "low"
+    },
+    "claim_tagger": {
+      "model": "claude-haiku-4-5",
+      "tier": "fast",
+      "effort": null
+    },
+    "fact_checker": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "medium"
+    },
+    "chief_editor": {
+      "model": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "effort": "medium"
+    }
+  },
+  "chapters_requested": 3,
+  "started_at": "2026-10-03T16:14:17",
+  "duration_s": 303.9,
+  "usage": {
+    "total": {
+      "calls": 75,
+      "input_tokens": 217109,
+      "output_tokens": 80872,
+      "cache_read_tokens": 662577,
+      "cache_write_tokens": 113825,
+      "cost_usd": 1.6081
+    },
+    "cache_read_share": 0.667,
+    "by_agent": {
+      "researcher": {
+        "calls": 32,
+        "input_tokens": 70,
+        "output_tokens": 20028,
+        "cache_read_tokens": 662577,
+        "cache_write_tokens": 113825,
+        "cost_usd": 0.6175
+      },
+      "writer": {
+        "calls": 16,
+        "input_tokens": 104886,
+        "output_tokens": 28632,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.4961
+      },
+      "editor": {
+        "calls": 9,
+        "input_tokens": 41699,
+        "output_tokens": 10872,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.1921
+      },
+      "fact_checker": {
+        "calls": 8,
+        "input_tokens": 47579,
+        "output_tokens": 8264,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.1778
+      },
+      "claim_tagger": {
+        "calls": 8,
+        "input_tokens": 14261,
+        "output_tokens": 7532,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0519
+      },
+      "planner": {
+        "calls": 1,
+        "input_tokens": 2743,
+        "output_tokens": 4600,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0515
+      },
+      "chief_editor": {
+        "calls": 1,
+        "input_tokens": 5871,
+        "output_tokens": 944,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0212
+      }
+    },
+    "by_model": {
+      "claude-sonnet-5-5": {
+        "calls": 67,
+        "input_tokens": 202848,
+        "output_tokens": 73340,
+        "cache_read_tokens": 662577,
+        "cache_write_tokens": 113825,
+        "cost_usd": 1.5562
+      },
+      "claude-haiku-4-5": {
+        "calls": 8,
+        "input_tokens": 14261,
+        "output_tokens": 7532,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0519
+      }
+    },
+    "by_chapter": {
+      "chapter 3": {
+        "calls": 27,
+        "input_tokens": 81855,
+        "output_tokens": 28737,
+        "cache_read_tokens": 262293,
+        "cache_write_tokens": 43936,
+        "cost_usd": 0.5938
+      },
+      "chapter 2": {
+        "calls": 27,
+        "input_tokens": 70324,
+        "output_tokens": 25325,
+        "cache_read_tokens": 306296,
+        "cache_write_tokens": 41913,
+        "cost_usd": 0.5403
+      },
+      "chapter 1": {
+        "calls": 19,
+        "input_tokens": 56316,
+        "output_tokens": 21266,
+        "cache_read_tokens": 93988,
+        "cache_write_tokens": 27976,
+        "cost_usd": 0.4014
+      },
+      "book": {
+        "calls": 2,
+        "input_tokens": 8614,
+        "output_tokens": 5544,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0,
+        "cost_usd": 0.0727
+      }
+    },
+    "tavily": {
+      "searches": 24,
+      "extract_reads": 4,
+      "credits_estimate": 52
+    }
+  },
+  "scorecard": {
+    "passed": true,
+    "partial_run": false,
+    "book": {
+      "checks": [
+        {
+          "rule": "chapter_count",
+          "passed": true,
+          "detail": "3 of 3 chapters"
+        }
+      ],
+      "metrics": {
+        "words": 2266,
+        "references": 16,
+        "official_share": 0.81
+      }
+    },
+    "chapters": [
+      {
+        "number": 1,
+        "title": "From Coins and Change to a Scan: How We Got Here",
+        "passed": true,
+        "checks": [
+          {
+            "rule": "word_count",
+            "passed": true,
+            "detail": "702 words (brief: 600-900)"
+          },
+          {
+            "rule": "flowing_prose",
+            "passed": true,
+            "detail": "list/heading markup in paragraphs []"
+          },
+          {
+            "rule": "no_urls_in_text",
+            "passed": true,
+            "detail": "links belong only in the reference list"
+          },
+          {
+            "rule": "takeaway_line",
+            "passed": true,
+            "detail": "one line starting 'Takeaway:', before the references"
+          },
+          {
+            "rule": "citations_resolve",
+            "passed": true,
+            "detail": "cited [1, 2, 3, 4]; references [1, 2, 3, 4]"
+          },
+          {
+            "rule": "reference_format",
+            "passed": true,
+            "detail": "source name, title and link"
+          },
+          {
+            "rule": "figures_cited",
+            "passed": true,
+            "detail": "0 sentence(s) with a figure but no citation"
+          },
+          {
+            "rule": "claims_supported",
+            "passed": true,
+            "detail": "0 claim(s) not fully supported"
+          },
+          {
+            "rule": "links_working",
+            "passed": true,
+            "detail": "0 broken, 0 not checked by the Fact-checker"
+          }
+        ],
+        "metrics": {
+          "word_count": 702,
+          "references": 4,
+          "official_sources": 3,
+          "official_share": 0.75,
+          "claims_checked": 8,
+          "claims_supported": 8,
+          "editor_approved": false,
+          "editor_scores": {
+            "tone": 4,
+            "clarity": 4,
+            "grammar": 4,
+            "jargon_free": 4,
+            "flow": 4,
+            "style_guide": 3
+          },
+          "rounds": {
+            "writer_passes": 5,
+            "editor_rounds": 3,
+            "fact_check_rounds": 2
+          },
+          "removed_sentences": 0,
+          "status": "shipped_with_warnings"
+        },
+        "warnings": [
+          "The Editor did not approve the final draft (send-back budget spent)."
+        ]
+      },
+      {
+        "number": 2,
+        "title": "Setting Up Your Shop to Get Paid",
+        "passed": true,
+        "checks": [
+          {
+            "rule": "word_count",
+            "passed": true,
+            "detail": "833 words (brief: 600-900)"
+          },
+          {
+            "rule": "flowing_prose",
+            "passed": true,
+            "detail": "list/heading markup in paragraphs []"
+          },
+          {
+            "rule": "no_urls_in_text",
+            "passed": true,
+            "detail": "links belong only in the reference list"
+          },
+          {
+            "rule": "takeaway_line",
+            "passed": true,
+            "detail": "one line starting 'Takeaway:', before the references"
+          },
+          {
+            "rule": "citations_resolve",
+            "passed": true,
+            "detail": "cited [1, 2, 3, 4, 5]; references [1, 2, 3, 4, 5]"
+          },
+          {
+            "rule": "reference_format",
+            "passed": true,
+            "detail": "source name, title and link"
+          },
+          {
+            "rule": "figures_cited",
+            "passed": true,
+            "detail": "0 sentence(s) with a figure but no citation"
+          },
+          {
+            "rule": "claims_supported",
+            "passed": true,
+            "detail": "0 claim(s) not fully supported"
+          },
+          {
+            "rule": "links_working",
+            "passed": true,
+            "detail": "0 broken, 0 not checked by the Fact-checker"
+          }
+        ],
+        "metrics": {
+          "word_count": 833,
+          "references": 5,
+          "official_sources": 4,
+          "official_share": 0.8,
+          "claims_checked": 10,
+          "claims_supported": 10,
+          "editor_approved": true,
+          "editor_scores": {
+            "tone": 5,
+            "clarity": 4,
+            "grammar": 5,
+            "jargon_free": 4,
+            "flow": 4,
+            "style_guide": 4
+          },
+          "rounds": {
+            "writer_passes": 5,
+            "editor_rounds": 3,
+            "fact_check_rounds": 3
+          },
+          "removed_sentences": 0,
+          "status": "ok"
+        },
+        "warnings": []
+      },
+      {
+        "number": 3,
+        "title": "Staying Safe and Growing with Digital Payments",
+        "passed": true,
+        "checks": [
+          {
+            "rule": "word_count",
+            "passed": true,
+            "detail": "731 words (brief: 600-900)"
+          },
+          {
+            "rule": "flowing_prose",
+            "passed": true,
+            "detail": "list/heading markup in paragraphs []"
+          },
+          {
+            "rule": "no_urls_in_text",
+            "passed": true,
+            "detail": "links belong only in the reference list"
+          },
+          {
+            "rule": "takeaway_line",
+            "passed": true,
+            "detail": "one line starting 'Takeaway:', before the references"
+          },
+          {
+            "rule": "citations_resolve",
+            "passed": true,
+            "detail": "cited [1, 2, 3, 4, 5, 6, 7]; references [1, 2, 3, 4, 5, 6, 7]"
+          },
+          {
+            "rule": "reference_format",
+            "passed": true,
+            "detail": "source name, title and link"
+          },
+          {
+            "rule": "figures_cited",
+            "passed": true,
+            "detail": "0 sentence(s) with a figure but no citation"
+          },
+          {
+            "rule": "claims_supported",
+            "passed": true,
+            "detail": "0 claim(s) not fully supported"
+          },
+          {
+            "rule": "links_working",
+            "passed": true,
+            "detail": "0 broken, 0 not checked by the Fact-checker"
+          }
+        ],
+        "metrics": {
+          "word_count": 731,
+          "references": 7,
+          "official_sources": 6,
+          "official_share": 0.86,
+          "claims_checked": 10,
+          "claims_supported": 10,
+          "editor_approved": true,
+          "editor_scores": {
+            "tone": 4,
+            "clarity": 4,
+            "grammar": 5,
+            "jargon_free": 4,
+            "flow": 4,
+            "style_guide": 4
+          },
+          "rounds": {
+            "writer_passes": 6,
+            "editor_rounds": 3,
+            "fact_check_rounds": 3
+          },
+          "removed_sentences": 1,
+          "status": "shipped_with_warnings"
+        },
+        "warnings": [
+          "Fact-check budget spent; the safety net removed 1 unverified sentence(s)."
+        ]
+      }
+    ]
+  },
+  "chapters": {
+    "1": {
+      "status": "shipped_with_warnings",
+      "warnings": [
+        "The Editor did not approve the final draft (send-back budget spent)."
+      ],
+      "rounds": {
+        "writer_passes": 5,
+        "editor_rounds": 3,
+        "fact_check_rounds": 2
+      },
+      "editor_approved": false
+    },
+    "2": {
+      "status": "ok",
+      "warnings": [],
+      "rounds": {
+        "writer_passes": 5,
+        "editor_rounds": 3,
+        "fact_check_rounds": 3
+      },
+      "editor_approved": true
+    },
+    "3": {
+      "status": "shipped_with_warnings",
+      "warnings": [
+        "Fact-check budget spent; the safety net removed 1 unverified sentence(s)."
+      ],
+      "rounds": {
+        "writer_passes": 6,
+        "editor_rounds": 3,
+        "fact_check_rounds": 3
+      },
+      "editor_approved": true
+    }
+  },
+  "chief_editor": {
+    "notes": [
+      "Voice is consistently warm, mentor-like and addresses Meena as 'you' across all three chapters; each opens with a concrete shop scene and closes with a Takeaway line.",
+      "Hand-off from Chapter 1 to 2 is good: Chapter 1 ends on saying yes to customers without change, Chapter 2 opens at the counter with a customer asking for a QR code.",
+      "Chapter 2 re-explains UPI ('as you know... the system that lets you send money') which is a light, acceptable recap but slightly repeats Chapter 1; trimmed to avoid re-explaining.",
+      "Chapter 2 explains the soundbox in passing and Chapter 3 explains it again; Chapter 3's second explanation should be dropped.",
+      "Chapter 2 defines UPI PIN and Chapter 3 re-defines it; the repeat should be removed.",
+      "Chapter 1 promises 'we will look at them properly later' about PhonePe, Google Pay and Paytm, but later chapters never do; softened so the promise is not left hanging.",
+      "Chapter 3 opening has a missing closing quotation mark in the customer's line.",
+      "Chapter 3 ends on 'Go and open your shop' although Chapter 2 already said the reader was ready to open; changed to fit the book's arc.",
+      "Rupee symbol ₹ is used consistently; 'UPI ID' and 'virtual payment address' are linked in Chapter 2."
+    ],
+    "applied": [
+      {
+        "chapter": 1,
+        "find": "and we will look at them properly later.",
+        "replace": "and now you will know what they are.",
+        "reason": "Chapter 1 promises a later look at these apps that never comes; this removes the dangling promise."
+      },
+      {
+        "chapter": 2,
+        "find": "UPI, as you know, is the system that lets you send money from one bank account to another using a phone. A static",
+        "replace": "A static",
+        "reason": "Avoid re-explaining UPI, already explained in Chapter 1."
+      },
+      {
+        "chapter": 3,
+        "find": "says, \"Done, see the screen.",
+        "replace": "says, \"Done, see the screen.\"",
+        "reason": "Fix the missing closing quotation mark."
+      },
+      {
+        "chapter": 3,
+        "find": "or the voice of your soundbox, the small speaker that announces a payment aloud.",
+        "replace": "or the voice of your soundbox.",
+        "reason": "Soundbox was already explained in Chapter 2."
+      },
+      {
+        "chapter": 3,
+        "find": "Your UPI PIN is the secret number you type to send money, and it belongs to you alone. Here is",
+        "replace": "You already know your UPI PIN is yours alone. Here is",
+        "reason": "UPI PIN was already defined in Chapter 2."
+      },
+      {
+        "chapter": 3,
+        "find": "Go and open your shop with confidence.",
+        "replace": "Now go and run your shop with confidence.",
+        "reason": "Chapter 2 already had the reader opening her doors; this fits the arc."
+      }
+    ],
+    "rejected": []
+  },
+  "final_chapters": [
+    {
+      "number": 1,
+      "title": "From Coins and Change to a Scan: How We Got Here",
+      "paragraphs": [
+        "Picture a busy kirana counter just before lunch. A customer buys a packet of biscuits that costs ten rupees and hands you a five hundred rupee note. You open the drawer and find only a few coins. You send a boy next door to ask for change, the customer waits, and the queue grows behind him. If you have ever helped at a shop, you know this small headache well. Now you are the one behind the counter, and it is good to know there is an easier way.",
+        "Cash brings other small troubles too. You count notes at night and count them again in the morning. You carry the money to the bank, stand in line, and lose a part of your day. None of this is hard, but it adds up, and it takes time you would rather spend on your customers.",
+        "So let us talk about UPI. UPI stands for Unified Payments Interface. It is a system that lets you send money straight from one bank account to another using your phone. There is no cash in between. The customer pays from their account, and the money lands in yours. To do this, people use a UPI app, which is a phone app that connects to your bank account so you can send and receive money. If you can use WhatsApp, you can learn this.",
+        "You may wonder who is behind it. UPI was launched on 25th August 2016 by the National Payments Corporation of India, or NPCI, with the Reserve Bank of India, or RBI, keeping watch over it [1]. NPCI is the organisation that built and runs UPI and other retail payment systems. It is an initiative of the RBI together with the Indian Banks' Association [2]. The RBI is India's central bank, which sets the rules for banks and payment systems. So this is not a side project from a stranger. It sits inside the country's own banking system.",
+        "The aim was simple. People needed a quick, common way to pay each other, whichever bank they used. A payment made through a phone, a card or a bank instead of with cash is called a digital payment, and UPI became the most familiar kind. At first, the idea was new. In the first year, FY 2016-17, 44 banks were live on UPI, which means they were connected and ready to take part [1].",
+        "Then it grew, and quickly. Annual UPI transactions went from 1.78 crore in FY 2016-17 to over 24,162 crore in FY 2025-26 [1]. That is an almost 13,000-fold surge in transaction volume [1]. A tiny trickle of payments has become a flood. You do not need to remember the numbers; they just show that many people pay this way every day.",
+        "Why does this matter to you? Because your customers are probably already used to it. Many will pull out their phones before you even ask. Some apps are especially popular. In February, PhonePe held 45.5% of UPI transaction volume, Google Pay 33.2% and Paytm 7.8% [3]. You will likely see these names on customers' screens, and now you will know what they are.",
+        "Even the smallest sellers have joined. Under a scheme called PM SVANidhi, street vendors get cashback incentives of up to ₹1,600 for digital transactions [4]. Cashback simply means a little money returned to the seller. Over 55 lakh beneficiaries were onboarded digitally under the scheme, and together they have carried out over 841 crore digital transactions [4]. Think of the person who sells vegetables from a cart. If that seller can take part, so can you at your counter.",
+        "It is natural to feel a little unsure about something new. Most shop owners feel the same way at first. But you are not stepping into an experiment. You are joining a system run by an official national body, watched over by the central bank and used by a great many people every day. Next time a customer holds out a big note and you have no change, you will know there is another way to say yes."
+      ],
+      "takeaway": "Takeaway: UPI is a widely used, officially run system that your customers already know, so accepting it is a normal part of running your shop and not a risky experiment.",
+      "references": [
+        {
+          "number": 1,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Completes 10 Years of Digital Payments Revolution",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+          "source_type": "official",
+          "evidence_ids": [
+            "E5",
+            "E4",
+            "E3"
+          ]
+        },
+        {
+          "number": 2,
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "Purpose, Mission & Value",
+          "url": "https://www.npci.org.in/purpose-value",
+          "source_type": "official",
+          "evidence_ids": [
+            "E2"
+          ]
+        },
+        {
+          "number": 3,
+          "source_name": "Entrackr",
+          "title": "PhonePe continues to rule UPI transactions with over 45% market share in Feb",
+          "url": "https://entrackr.com/news/phonepe-continues-to-rule-upi-transactions-with-over-45-market-share-in-feb-11209982",
+          "source_type": "other",
+          "evidence_ids": [
+            "E7"
+          ]
+        },
+        {
+          "number": 4,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "PM SVANidhi: From Survival to Self-Reliance",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2266920&reg=3&lang=1",
+          "source_type": "official",
+          "evidence_ids": [
+            "E6",
+            "E8"
+          ]
+        }
+      ],
+      "word_count": 702,
+      "evidence": [
+        {
+          "id": "E2",
+          "fact_need_id": "F1",
+          "claim": "NPCI is an umbrella organisation for retail payments and settlement systems, an initiative of RBI and IBA.",
+          "quote": "National Payments Corporation of India (NPCI), an umbrella organisation for operating retail payments and settlement systems in India, is an initiative of Reserve Bank of India (RBI) and Indian Banks’ Association (IBA) under the provisions of the Payment and Settlement Systems Act, 2007, for creating a robust Payment & Settlement Infrastructure in India.",
+          "url": "https://www.npci.org.in/purpose-value",
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "Purpose, Mission & Value",
+          "source_type": "official",
+          "published": "2000-01-01"
+        },
+        {
+          "id": "E3",
+          "fact_need_id": "F4",
+          "claim": "Annual UPI transactions grew from 1.78 crore in FY 2016-17 to over 24,162 crore in FY 2025-26.",
+          "quote": "Annual transaction volume expanded from just 1.78 crore transactions in FY 2016-17 to over 24,162 crore transactions in FY 2025-26, representing an almost 13,000‑fold surge in transaction volume.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Completes 10 Years of Digital Payments Revolution",
+          "source_type": "official",
+          "published": "2025-11-20"
+        },
+        {
+          "id": "E4",
+          "fact_need_id": "F5",
+          "claim": "The number of banks live on UPI rose from 44 in FY 2016-17 to 703 by FY 2025-26.",
+          "quote": "The number of banks live on UPI increased from 44 banks in FY 2016-17, the first year of operations, to 703 banks by FY 2025-26.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Completes 10 Years of Digital Payments Revolution",
+          "source_type": "official",
+          "published": "2025-11-20"
+        },
+        {
+          "id": "E5",
+          "fact_need_id": "F2",
+          "claim": "UPI was launched on 25th August 2016 by NPCI under the regulatory oversight of RBI.",
+          "quote": "The Unified Payments Interface (UPI), launched on 25th August 2016 by the National Payments Corporation of India (NPCI) under the regulatory oversight of the Reserve Bank of India (RBI) completes 10 years of transforming digital payments in India.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Completes 10 Years of Digital Payments Revolution",
+          "source_type": "official",
+          "published": "2025-11-20"
+        },
+        {
+          "id": "E6",
+          "fact_need_id": "F7",
+          "claim": "Under PM SVANidhi, street vendors get cashback incentives of up to ₹1,600 for digital transactions.",
+          "quote": "Digital Adoption: Cashback incentives of up to ₹1,600 are provided to street vendors for retail/wholesale digital transactions to encourage digital adoption and financial literacy.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2266920&reg=3&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "PM SVANidhi: From Survival to Self-Reliance",
+          "source_type": "official",
+          "published": "2026-05-30"
+        },
+        {
+          "id": "E7",
+          "fact_need_id": "F6",
+          "claim": "In February, per NPCI data, PhonePe held 45.5% of UPI volume, Google Pay 33.2% and Paytm 7.8%.",
+          "quote": "The Walmart-backed app held 45.5% share of total UPI transaction volume and 48.8% share by value during the month. Google Pay followed with 6.76 billion transactions worth Rs 9,03,051.60 crore. The platform accounted for 33.2% share by volume and 33.6% by value. Paytm secured the third position after recording 1.59 billion transactions worth Rs 1,74,128.86 crore, translating to 7.8% share in volume and 6.5% in value.",
+          "url": "https://entrackr.com/news/phonepe-continues-to-rule-upi-transactions-with-over-45-market-share-in-feb-11209982",
+          "source_name": "Entrackr",
+          "title": "PhonePe continues to rule UPI transactions with over 45% market share in Feb",
+          "source_type": "other",
+          "published": "2026-03-13"
+        },
+        {
+          "id": "E8",
+          "fact_need_id": "F7",
+          "claim": "Under PM SVANidhi, over 55 lakh beneficiaries were onboarded digitally and carried out over 841 crore digital transactions.",
+          "quote": "Over 55 lakh beneficiaries have been onboarded digitally under the scheme. Together, they have carried out over 841 crore digital transactions worth nearly ₹8.96 lakh crore.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2266920&reg=3&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "PM SVANidhi: From Survival to Self-Reliance",
+          "source_type": "official",
+          "published": "2026-05-30"
+        }
+      ],
+      "claim_checks": [
+        {
+          "sentence_id": 18,
+          "sentence": "UPI was launched on 25th August 2016 by the National Payments Corporation of India, or NPCI, with the Reserve Bank of India, or RBI, keeping watch over it [E5].",
+          "cited": [
+            "E5"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E5 states UPI was launched on 25 August 2016 by NPCI under the regulatory oversight of RBI; 'keeping watch' is a fair paraphrase.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 20,
+          "sentence": "It is an initiative of the RBI together with the Indian Banks' Association [E2].",
+          "cited": [
+            "E2"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E2 says NPCI is an initiative of RBI and Indian Banks' Association. The sentence's 'It' presumably refers to NPCI, which matches.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 28,
+          "sentence": "In the first year, FY 2016-17, 44 banks were live on UPI, which means they were connected and ready to take part [E4].",
+          "cited": [
+            "E4"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E4 states 44 banks were live on UPI in FY 2016-17, the first year of operations. The explanation of 'live' is a plain-language gloss.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 30,
+          "sentence": "Annual UPI transactions went from 1.78 crore in FY 2016-17 to over 24,162 crore in FY 2025-26 [E3].",
+          "cited": [
+            "E3"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E3 gives 1.78 crore in FY 2016-17 and over 24,162 crore in FY 2025-26 for annual transaction volume.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 31,
+          "sentence": "That is an almost 13,000-fold surge in transaction volume [E3].",
+          "cited": [
+            "E3"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E3 explicitly describes the growth as an almost 13,000-fold surge in transaction volume.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 38,
+          "sentence": "In February, PhonePe held 45.5% of UPI transaction volume, Google Pay 33.2% and Paytm 7.8% [E7].",
+          "cited": [
+            "E7"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E7 gives 45.5%, 33.2% and 7.8% volume shares for PhonePe, Google Pay and Paytm in February, per NPCI data.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 41,
+          "sentence": "Under a scheme called PM SVANidhi, street vendors get cashback incentives of up to ₹1,600 for digital transactions [E6].",
+          "cited": [
+            "E6"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E6 states cashback incentives of up to ₹1,600 are provided to street vendors for digital transactions under PM SVANidhi.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 43,
+          "sentence": "Over 55 lakh beneficiaries were onboarded digitally under the scheme, and together they have carried out over 841 crore digital transactions [E8].",
+          "cited": [
+            "E8"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E8 states over 55 lakh beneficiaries were onboarded digitally and together carried out over 841 crore digital transactions.",
+          "fix_hint": "",
+          "needs_new_source": false
+        }
+      ],
+      "stats": {
+        "status": "shipped_with_warnings",
+        "warnings": [
+          "The Editor did not approve the final draft (send-back budget spent)."
+        ],
+        "rounds": {
+          "writer_passes": 5,
+          "editor_rounds": 3,
+          "fact_check_rounds": 2
+        },
+        "editor_approved": false,
+        "editor_scores": {
+          "tone": 4,
+          "clarity": 4,
+          "grammar": 4,
+          "jargon_free": 4,
+          "flow": 4,
+          "style_guide": 3
+        },
+        "fact_check": "8/8 claims supported; 0 partial, 0 unsupported, 0 uncited; 4/4 links OK",
+        "fact_check_passed": true,
+        "links": [
+          {
+            "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2302657&reg=48&lang=2",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.npci.org.in/purpose-value",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.npci.org.in/purpose-value",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://entrackr.com/news/phonepe-continues-to-rule-upi-transactions-with-over-45-market-share-in-feb-11209982",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://entrackr.com/news/phonepe-continues-to-rule-upi-transactions-with-over-45-market-share-in-feb-11209982",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2266920&reg=3&lang=1",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2266920&reg=3&lang=1",
+            "error": null,
+            "via": "direct"
+          }
+        ],
+        "removed_sentences": [],
+        "missing_fact_needs": []
+      }
+    },
+    {
+      "number": 2,
+      "title": "Setting Up Your Shop to Get Paid",
+      "paragraphs": [
+        "It is opening morning, and your shelves are full. A customer picks up a packet of biscuits and a bar of soap, smiles and asks, \"Do you have a QR code?\" You look at the blank wall behind you and feel a small knot in your stomach. Don't worry. Almost everyone starts exactly here, and the answer is simpler than you think.",
+        "A QR code is a small square pattern that a customer scans with their phone camera to pay you. That is all it is. Think of it as your shop's address for money. You can use two kinds of QR code. NPCI, the national body that runs UPI, says UPI supports merchant payments through static and dynamic QR codes [1]. A static QR code is one fixed code that customers scan and then type in the amount. A dynamic QR code is made fresh for each bill, with the amount already filled in. For a general store starting out, a fixed code on the wall is a perfectly good beginning.",
+        "Now, what do you need to get going? Only three things: a bank account, a phone and a QR code. You need a bank account, because SBI says the receiver must have one and the amount is credited directly to it instantly [2]. You probably have a savings account already, and that can be your starting point.",
+        "Next comes the QR code itself, and you can get it from your bank or from a UPI app. If you bank with SBI, for example, the bank says you can approach your nearest branch to get an SBI UPI QR code [2]. Other banks and apps have their own ways, so a short visit or a call to your branch will tell you the steps. Ask the staff to sit with you while you set it up. Nobody minds, and it is their job.",
+        "You will hear a few other names along the way, so let us sort them out. A UPI ID, also called a virtual payment address, is like an email address for your bank account. People can pay you with it without knowing your account number. A UPI PIN is a secret number that you enter to send money. It is yours alone, so keep it private, even from a helpful stranger.",
+        "You may also wonder about a personal account versus a merchant account. A merchant account is a bank account or app profile set up for a business to receive customer payments. For small vendors there is also a middle path. The Department of Financial Services says the Person-to-Person-Merchant framework is a category created by NPCI to support small vendors receiving payments directly into their own personal bank accounts [3]. So you do not have to feel stuck if you are not ready for a full business setup. And if you already have a QR stand or soundbox, the Department says merchants do not need to replace, re-register, or alter their existing physical QR stands or soundboxes [3].",
+        "Then there is the question every shopkeeper asks: what will this cost me? MDR is a fee that a shop may be charged by its bank each time a customer pays by card or other digital means. A customer paying a shop is called a P2M payment. The Press Information Bureau says a nominal MDR of 0.4% will apply only to P2M transactions above ₹2,000 [4]. That means smaller payments carry no MDR. Think of a customer paying for biscuits, soap or tea, which is just an everyday picture and not a figure from the source. You also do not need GST registration, which is the tax sign-up some businesses must complete, for a small merchant to qualify for zero MDR on UPI [3]. You may also see daily limits on how much can be paid. These are safety limits set by banks and NPCI, not charges [4].",
+        "Now to the money itself. Settlement is the step where the money from a payment actually lands in your bank account. NPCI describes UPI as an instant payment system that allows you to instantly transfer money between any two parties' bank accounts [1]. You will also be in good company, because the Press Information Bureau, the government's news office, says UPI serves more than 6.5 crore merchants [5].",
+        "Last, build a small routine for checking that each payment really arrived. Never rely on the customer's screen alone. Look for your own proof: a soundbox, which is a small speaker at the counter that announces aloud when a payment has arrived in your account, or the notification on your phone. At closing time, open your app's history and match it with your day's sales. It takes only a few minutes, and it will quickly become as natural as counting the cash drawer. Once that habit is in place, you are ready to open your doors."
+      ],
+      "takeaway": "Takeaway: Getting started takes only a bank account, a phone and a QR code, so set one up this week and place it where every customer can see it.",
+      "references": [
+        {
+          "number": 1,
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI: Unified Payments Interface - Instant Mobile Payments",
+          "url": "https://www.npci.org.in/product/upi",
+          "source_type": "official",
+          "evidence_ids": [
+            "E3",
+            "E5"
+          ]
+        },
+        {
+          "number": 2,
+          "source_name": "State Bank of India",
+          "title": "UPI - Customer Care",
+          "url": "https://sbi.bank.in/web/customer-care/upi1",
+          "source_type": "other",
+          "evidence_ids": [
+            "E7",
+            "E6"
+          ]
+        },
+        {
+          "number": 3,
+          "source_name": "Department of Financial Services, Ministry of Finance",
+          "title": "FAQs: Merchant Discount Rate (MDR) on Select UPI (P2M) Transactions",
+          "url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+          "source_type": "official",
+          "evidence_ids": [
+            "E11",
+            "E10",
+            "E9"
+          ]
+        },
+        {
+          "number": 4,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Continues to Remain Free for Peer to Peer Transactions and 96% of Merchant Transactions",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2310586&reg=48&lang=1",
+          "source_type": "official",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ]
+        },
+        {
+          "number": 5,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Empowering Governance through Digital Infrastructure",
+          "url": "https://www.pib.gov.in/FactsheetDetails.aspx?id=150840&NoteId=150840&ModuleId=16&reg=48&lang=1",
+          "source_type": "official",
+          "evidence_ids": [
+            "E8"
+          ]
+        }
+      ],
+      "word_count": 833,
+      "evidence": [
+        {
+          "id": "E1",
+          "fact_need_id": "F3",
+          "claim": "A nominal MDR of 0.4% applies only to P2M transactions above ₹2,000; payments to merchants up to ₹2,000 are free of MDR.",
+          "quote": "A nominal MDR of 0.4% will apply only to P2M transactions above ₹2,000.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2310586&reg=48&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Continues to Remain Free for Peer to Peer Transactions and 96% of Merchant Transactions",
+          "source_type": "official",
+          "published": "2025-11-20"
+        },
+        {
+          "id": "E2",
+          "fact_need_id": "F4",
+          "claim": "Daily transaction limits set by banks and NPCI generally range from ₹1 lakh to ₹5 lakh depending on category; they are safeguards, not charging thresholds.",
+          "quote": "Daily transaction limits prescribed by banks and NPCI, generally ranging from ₹1 lakh to ₹5 lakh depending on the transaction category, are security and risk-management safeguards.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2310586&reg=48&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "UPI Continues to Remain Free for Peer to Peer Transactions and 96% of Merchant Transactions",
+          "source_type": "official",
+          "published": "2025-11-20"
+        },
+        {
+          "id": "E3",
+          "fact_need_id": "F2",
+          "claim": "UPI supports merchant payments through static and dynamic QR codes; static is fixed for general use, dynamic is generated per transaction.",
+          "quote": "UPI supports merchant payments through static and dynamic QR codes. A static QR is fixed for general use, while a dynamic one is generated per transaction.",
+          "url": "https://www.npci.org.in/product/upi",
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI: Unified Payments Interface - Instant Mobile Payments",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E5",
+          "fact_need_id": "F5",
+          "claim": "NPCI describes UPI as an instant payment system that lets you instantly transfer money between any two parties' bank accounts.",
+          "quote": "Unified Payments Interface (UPI) is an instant payment system developed by the National Payments Corporation of India (NPCI), an RBI regulated entity. UPI is built over the IMPS infrastructure and allows you to instantly transfer money between any two parties bank accounts.",
+          "url": "https://www.npci.org.in/product/upi",
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI: Unified Payments Interface - Instant Mobile Payments",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E6",
+          "fact_need_id": "F7",
+          "claim": "SBI customers wanting an SBI UPI QR code can approach their nearest branch, then enrol as a merchant in BHIM SBI Pay's 'Business' tab.",
+          "quote": "SBI customers who wish to register as a Merchant and wants SBI UPI QR code (to receive funds from their customers) can approach their nearest branch.",
+          "url": "https://sbi.bank.in/web/customer-care/upi1",
+          "source_name": "State Bank of India",
+          "title": "UPI - Customer Care",
+          "source_type": "other",
+          "published": "2024-12-20"
+        },
+        {
+          "id": "E7",
+          "fact_need_id": "F5",
+          "claim": "SBI says the receiver must have a bank account, and the amount is credited directly to it instantly.",
+          "quote": "Yes, the beneficiary/receiver must have a bank account for receiving the money. Amount is directly credited to the account instantly.",
+          "url": "https://sbi.bank.in/web/customer-care/upi1",
+          "source_name": "State Bank of India",
+          "title": "UPI - Customer Care",
+          "source_type": "other",
+          "published": "2024-12-20"
+        },
+        {
+          "id": "E8",
+          "fact_need_id": "F6",
+          "claim": "UPI serves more than 55.49 crore individuals and 6.5 crore merchants, per PIB.",
+          "quote": "UPI serves more than 55.49 crore individuals, 6.5 crore merchants, and connects 731 banks on one platform, making it the world's largest digital payment system.",
+          "url": "https://www.pib.gov.in/FactsheetDetails.aspx?id=150840&NoteId=150840&ModuleId=16&reg=48&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Empowering Governance through Digital Infrastructure",
+          "source_type": "official",
+          "published": "2026-10-03"
+        },
+        {
+          "id": "E9",
+          "fact_need_id": "extra",
+          "claim": "GST registration is not required for a small merchant to qualify for zero MDR on UPI.",
+          "quote": "No, GST registration is not required for a small merchant to qualify for zero MDR protections on UPI transactions.",
+          "url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+          "source_name": "Department of Financial Services, Ministry of Finance",
+          "title": "FAQs: Merchant Discount Rate (MDR) on Select UPI (P2M) Transactions",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E10",
+          "fact_need_id": "extra",
+          "claim": "Existing QR codes keep working; merchants need not replace or re-register them.",
+          "quote": "Merchants do not need to replace, re-register, or alter their existing physical QR stands or soundboxes.",
+          "url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+          "source_name": "Department of Financial Services, Ministry of Finance",
+          "title": "FAQs: Merchant Discount Rate (MDR) on Select UPI (P2M) Transactions",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E11",
+          "fact_need_id": "F1",
+          "claim": "P2PM is a category created by NPCI for small vendors receiving payments directly into their own personal bank accounts.",
+          "quote": "The Person -to-Person-Merchant (P2PM) framework is a specialized account category created by NPCI to support small vendors receiving payments directly into their own personal bank accounts.",
+          "url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+          "source_name": "Department of Financial Services, Ministry of Finance",
+          "title": "FAQs: Merchant Discount Rate (MDR) on Select UPI (P2M) Transactions",
+          "source_type": "official",
+          "published": null
+        }
+      ],
+      "claim_checks": [
+        {
+          "sentence_id": 9,
+          "sentence": "NPCI, the national body that runs UPI, says UPI supports merchant payments through static and dynamic QR codes [E3].",
+          "cited": [
+            "E3"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E3 quote says NPCI's page states UPI supports merchant payments through static and dynamic QR codes. The description of NPCI as the national body that runs UPI is consistent with E5, which says NPCI developed UPI.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 16,
+          "sentence": "You need a bank account, because SBI says the receiver must have one and the amount is credited directly to it instantly [E7].",
+          "cited": [
+            "E7"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E7 states the beneficiary/receiver must have a bank account and the amount is credited directly and instantly.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 19,
+          "sentence": "If you bank with SBI, for example, the bank says you can approach your nearest branch to get an SBI UPI QR code [E6].",
+          "cited": [
+            "E6"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E6 says SBI customers who want an SBI UPI QR code can approach their nearest branch.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 31,
+          "sentence": "The Department of Financial Services says the Person-to-Person-Merchant framework is a category created by NPCI to support small vendors receiving payments directly into their own personal bank accounts [E11].",
+          "cited": [
+            "E11"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E11 states the P2PM framework is a specialized account category created by NPCI to support small vendors receiving payments directly into their personal bank accounts.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 33,
+          "sentence": "And if you already have a QR stand or soundbox, the Department says merchants do not need to replace, re-register, or alter their existing physical QR stands or soundboxes [E10].",
+          "cited": [
+            "E10"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E10 states merchants do not need to replace, re-register, or alter existing physical QR stands or soundboxes.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 37,
+          "sentence": "The Press Information Bureau says a nominal MDR of 0.4% will apply only to P2M transactions above ₹2,000 [E1].",
+          "cited": [
+            "E1"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E1 quote matches exactly: a nominal MDR of 0.4% will apply only to P2M transactions above ₹2,000.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 40,
+          "sentence": "You also do not need GST registration, which is the tax sign-up some businesses must complete, for a small merchant to qualify for zero MDR on UPI [E9].",
+          "cited": [
+            "E9"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E9 says GST registration is not required for a small merchant to qualify for zero MDR on UPI. The explanation of GST as a tax sign-up is a plain definition.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 42,
+          "sentence": "These are safety limits set by banks and NPCI, not charges [E2].",
+          "cited": [
+            "E2"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E2 says the daily limits prescribed by banks and NPCI are security and risk-management safeguards, and the context says they are not charging thresholds.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 45,
+          "sentence": "NPCI describes UPI as an instant payment system that allows you to instantly transfer money between any two parties' bank accounts [E5].",
+          "cited": [
+            "E5"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E5 quote states UPI is an instant payment system that allows you to instantly transfer money between any two parties' bank accounts.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 46,
+          "sentence": "You will also be in good company, because the Press Information Bureau, the government's news office, says UPI serves more than 6.5 crore merchants [E8].",
+          "cited": [
+            "E8"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E8 says UPI serves more than 55.49 crore individuals and 6.5 crore merchants. The sentence says 'more than 6.5 crore merchants', but the 'more than' in E8 grammatically covers both figures, so this reading is reasonable. The 'good company' framing is rhetorical.",
+          "fix_hint": "",
+          "needs_new_source": false
+        }
+      ],
+      "stats": {
+        "status": "ok",
+        "warnings": [],
+        "rounds": {
+          "writer_passes": 5,
+          "editor_rounds": 3,
+          "fact_check_rounds": 3
+        },
+        "editor_approved": true,
+        "editor_scores": {
+          "tone": 5,
+          "clarity": 4,
+          "grammar": 5,
+          "jargon_free": 4,
+          "flow": 4,
+          "style_guide": 4
+        },
+        "fact_check": "10/10 claims supported; 0 partial, 0 unsupported, 0 uncited; 5/5 links OK",
+        "fact_check_passed": true,
+        "links": [
+          {
+            "url": "https://www.npci.org.in/product/upi",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.npci.org.in/product/upi",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://sbi.bank.in/web/customer-care/upi1",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://sbi.bank.in/web/customer-care/upi1",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://financialservices.gov.in/sites/default/files/2026-09/FAQs---Merchant-Discount-Rate--MDR--on-Select-UPI--P2M--Transactions_0.pdf",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2310586&reg=48&lang=1",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2310586&reg=48&lang=1",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/FactsheetDetails.aspx?id=150840&NoteId=150840&ModuleId=16&reg=48&lang=1",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/FactsheetDetails.aspx?id=150840&NoteId=150840&ModuleId=16&reg=48&lang=1",
+            "error": null,
+            "via": "direct"
+          }
+        ],
+        "removed_sentences": [],
+        "missing_fact_needs": []
+      }
+    },
+    {
+      "number": 3,
+      "title": "Staying Safe and Growing with Digital Payments",
+      "paragraphs": [
+        "Picture Ramesh, who runs a tea stall. A customer finishes two cups of tea, holds up his phone and says, \"Done, see the screen.\" The screen shows a green tick. The queue is long, and Ramesh nearly waves him off. Then he checks his own phone, and no payment is there. This trick is called payment screenshot fraud: a customer shows a fake picture of a payment on their phone even though no money was sent. It can sound worrying, but one small habit helps a lot.",
+        "That habit is simple. Never trust the customer's screen. Trust only your side: the notification from your bank or UPI app, or the voice of your soundbox. If you are unsure, open your app and look at the credit yourself. It takes a few seconds, and you are not accusing anyone. You are just being a careful shop owner.",
+        "Now let us talk about your PIN. You already know your UPI PIN is yours alone. Here is the part that surprises many people: receiving money never needs a PIN. So if someone says, \"Just enter your PIN and the money will come,\" you can calmly say no.",
+        "Some tricks arrive as a collect request, which is a message asking you to approve a payment out of your account. If you are expecting money, never approve one. The same advice says to reject unknown collect requests, to verify the beneficiary name before approving payments, and never to scan QR codes sent by strangers [1]. The beneficiary is simply the person or shop receiving the money.",
+        "Sometimes things go wrong even when everyone is honest. First, try your UPI app: open the transaction history, select the payment, tap UPI HELP, choose the reason and confirm [2]. If the problem is a fraudulent transaction, NPCI says to connect with your bank [2]. It also helps to know about a reversal, which is when money from a failed or wrongly processed payment is sent back to the person who paid. For a merchant payment where the shop got no confirmation, the reversal is due within T + 5 days, with ₹100 per day of compensation for delay beyond that [3]. Here, T simply means the day of the payment.",
+        "If you still get no answer, you can register a complaint with the RBI Integrated Ombudsman Scheme [3]. Think of it as a route for taking your complaint further when the usual steps have not worked.",
+        "If you ever fall victim to a real fraud, act quickly. The Ministry of Home Affairs runs a toll-free helpline, 1930, for reporting financial frauds [4]. Victims are advised to dial it at once, because the helpline works with banks and payment intermediaries to try to freeze the funds before they move out of the fraudster's account [1]. Keep that number saved in your phone, next to your supplier's.",
+        "Now the good part. Every digital payment leaves a record, and that record is a gift. At the end of the day you can see what came in without counting slips of paper. Come tax time, tidy records make life easier. The presumptive taxation scheme allows certain taxpayers, such as small businesses, to declare income at a prescribed rate of turnover or receipts, without maintaining regular accounts or undergoing audits [5]. Turnover simply means your total sales. GST is the tax shops collect on sales. GST-registered businesses must retain books of accounts and other records for 72 months (6 years) from the due date of furnishing the annual return for the year relating to those records [6].",
+        "That history can also help you borrow. SIDBI has launched the GST Sahay app, which offers small value credit to micro enterprises based on their invoices and trade data [7]. The better your sales are written down, the easier it is to show a lender what your shop earns.",
+        "Growing starts with small steps. Keep your QR code where customers can see it. Accept both cash and UPI, so nobody leaves empty-handed. Once a week, look at your history and see which days are busy and which items sell fastest. Then stock a little more of what moves. You have come a long way through these chapters, and you know more than you think. Now go and run your shop with confidence."
+      ],
+      "takeaway": "Takeaway: Trust the bank notification and never your customer's screenshot, and keep your digital record, because it protects you today and helps you grow tomorrow.",
+      "references": [
+        {
+          "number": 1,
+          "source_name": "Business Standard",
+          "title": "Lost money by scanning a QR code? Follow these steps immediately for funds",
+          "url": "https://www.business-standard.com/finance/personal-finance/lost-money-by-scanning-a-qr-code-follow-these-steps-immediately-for-funds-126052800844_1.html",
+          "source_type": "news",
+          "evidence_ids": [
+            "E8",
+            "E11"
+          ]
+        },
+        {
+          "number": 2,
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI Help-Guidelines_July' 23",
+          "url": "https://www.npci.org.in/uploads/UPI_Help_Brand_Guidelines_86c8c28922.pdf",
+          "source_type": "official",
+          "evidence_ids": [
+            "E7",
+            "E6"
+          ]
+        },
+        {
+          "number": 3,
+          "source_name": "Reserve Bank of India (RBI)",
+          "title": "Harmonisation of Turn Around Time (TAT) and customer compensation for failed transactions using authorised Payment Systems",
+          "url": "https://www.rbi.org.in/Commonperson/english/Scripts/Notification.aspx?Id=3074",
+          "source_type": "official",
+          "evidence_ids": [
+            "E2",
+            "E3"
+          ]
+        },
+        {
+          "number": 4,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Cyber Frauds Helpline",
+          "url": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1814120",
+          "source_type": "official",
+          "evidence_ids": [
+            "E4"
+          ]
+        },
+        {
+          "number": 5,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "PIB Backgrounder: 15 September 2025 : ITR Deadline What Every Taxpayer Should Know",
+          "url": "https://www.pib.gov.in/PressNoteDetails.aspx?NoteId=155163&ModuleId=3",
+          "source_type": "official",
+          "evidence_ids": [
+            "E9"
+          ]
+        },
+        {
+          "number": 6,
+          "source_name": "GSTN (tutorial.gst.gov.in)",
+          "title": "Welcome Kit for New Taxpayers (GSTN)",
+          "url": "https://tutorial.gst.gov.in/downloads/news/welcome_kit_for_new_taxpyers.pdf",
+          "source_type": "official",
+          "evidence_ids": [
+            "E10"
+          ]
+        },
+        {
+          "number": 7,
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Government Boosts MSME Financing Through SIDBI and ECLGS 5.0",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2294261&reg=48&lang=1",
+          "source_type": "official",
+          "evidence_ids": [
+            "E5"
+          ]
+        }
+      ],
+      "word_count": 731,
+      "evidence": [
+        {
+          "id": "E2",
+          "fact_need_id": "F5",
+          "claim": "For UPI merchant payments where the account is debited but confirmation is not received at the merchant, auto-reversal is due within T + 5 days, with ₹100 per day compensation beyond that.",
+          "quote": "Account debited but transaction confirmation not received at merchant location (payment to merchant). | Auto-reversal within T + 5 days. | ₹100/- per day if delay is beyond T + 5 days.",
+          "url": "https://www.rbi.org.in/Commonperson/english/Scripts/Notification.aspx?Id=3074",
+          "source_name": "Reserve Bank of India (RBI)",
+          "title": "Harmonisation of Turn Around Time (TAT) and customer compensation for failed transactions using authorised Payment Systems",
+          "source_type": "official",
+          "published": "2019-09-20"
+        },
+        {
+          "id": "E3",
+          "fact_need_id": "F2",
+          "claim": "Customers who don't get redress within the prescribed timeline can complain to the RBI Integrated Ombudsman Scheme.",
+          "quote": "Customers who do not get the benefit of redress of the failure as defined in the TAT, can register a complaint with the Reserve Bank - Integrated Ombudsman Scheme, 2021 (as amended from time to time).",
+          "url": "https://www.rbi.org.in/Commonperson/english/Scripts/Notification.aspx?Id=3074",
+          "source_name": "Reserve Bank of India (RBI)",
+          "title": "Harmonisation of Turn Around Time (TAT) and customer compensation for failed transactions using authorised Payment Systems",
+          "source_type": "official",
+          "published": "2019-09-20"
+        },
+        {
+          "id": "E4",
+          "fact_need_id": "F3",
+          "claim": "The MHA runs toll-free helpline 1930 for reporting financial frauds and the National Cyber Crime Reporting Portal at www.cybercrime.gov.in.",
+          "quote": "The Ministry of Home Affairs has operationalized a toll-free Helpline number ‘1930’ (earlier ‘155260’) for immediate reporting of financial frauds on the “Citizen Financial Cyber Fraud Reporting and Management System” module and to get assistance in lodging cyber crime incidents on the “National Cyber Crime Reporting Portal” (www.cybercrime.gov.in).",
+          "url": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1814120",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Cyber Frauds Helpline",
+          "source_type": "official",
+          "published": "2022-04-06"
+        },
+        {
+          "id": "E5",
+          "fact_need_id": "F6",
+          "claim": "SIDBI launched the GST Sahay app for on-tap invoice-based (cash flow based) small value credit to micro enterprises using trade data and digital frameworks.",
+          "quote": "SIDBI has launched a GST Sahay app for ‘on tap’ invoice-based (cash flow based) small value credit to micro enterprises using trade data and digital frameworks.",
+          "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2294261&reg=48&lang=1",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "Government Boosts MSME Financing Through SIDBI and ECLGS 5.0",
+          "source_type": "official",
+          "published": "2026-08-04"
+        },
+        {
+          "id": "E6",
+          "fact_need_id": "F2",
+          "claim": "In UPI apps, users raise a complaint via transaction history, selecting the transaction and clicking UPI HELP; complaints for fraudulent transactions should go to the bank.",
+          "quote": "Incase you are raising a complaint for a fraudulent transaction, kindly connect with your bank.",
+          "url": "https://www.npci.org.in/uploads/UPI_Help_Brand_Guidelines_86c8c28922.pdf",
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI Help-Guidelines_July' 23",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E7",
+          "fact_need_id": "F2",
+          "claim": "The UPI HELP steps: click transaction history, select the transaction, click UPI HELP, select reason and confirm.",
+          "quote": "Click on transaction history •  Select the transaction for raising complaint •  Click on UPI HELP •  Select the reason and click on confirm •  Complaint raised successfully",
+          "url": "https://www.npci.org.in/uploads/UPI_Help_Brand_Guidelines_86c8c28922.pdf",
+          "source_name": "National Payments Corporation of India (NPCI)",
+          "title": "UPI Help-Guidelines_July' 23",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E8",
+          "fact_need_id": "F1",
+          "claim": "NPCI and banks advise users never to enter a UPI PIN to receive money, to verify the beneficiary name before approving payments, and not to share OTPs or UPI PINs.",
+          "quote": "NPCI and banks advise users to follow a few basic precautions: Never scan QR codes sent by strangersNever enter UPI PIN to receive moneyAlways verify the beneficiary name before approving paymentsReject unknown collect requestsDo not share OTPs or UPI PINs",
+          "url": "https://www.business-standard.com/finance/personal-finance/lost-money-by-scanning-a-qr-code-follow-these-steps-immediately-for-funds-126052800844_1.html",
+          "source_name": "Business Standard",
+          "title": "Lost money by scanning a QR code? Follow these steps immediately for funds",
+          "source_type": "news",
+          "published": "2026-05-28"
+        },
+        {
+          "id": "E9",
+          "fact_need_id": "F7",
+          "claim": "Under the presumptive taxation scheme, eligible small businesses can declare income at a prescribed rate of turnover or receipts without maintaining regular accounts or undergoing audits.",
+          "quote": "Under the presumptive taxation scheme, the Income Tax Act allows certain taxpayers (small businesses, professionals, and transporters) to declare income at a prescribed rate of turnover or receipts, without the need to maintain regular accounts or undergo audits.",
+          "url": "https://www.pib.gov.in/PressNoteDetails.aspx?NoteId=155163&ModuleId=3",
+          "source_name": "Press Information Bureau, Government of India",
+          "title": "PIB Backgrounder: 15 September 2025 : ITR Deadline What Every Taxpayer Should Know",
+          "source_type": "official",
+          "published": "2025-09-07"
+        },
+        {
+          "id": "E10",
+          "fact_need_id": "F7",
+          "claim": "GST registered businesses must keep books and records for 72 months (6 years) from the due date of the annual return for that year.",
+          "quote": "Books of accounts and others records have to be retained and preserved for a period of 72 months (6 years) from the due date of furnishing of Annual Return for the year relating to such accounts and records.",
+          "url": "https://tutorial.gst.gov.in/downloads/news/welcome_kit_for_new_taxpyers.pdf",
+          "source_name": "GSTN (tutorial.gst.gov.in)",
+          "title": "Welcome Kit for New Taxpayers (GSTN)",
+          "source_type": "official",
+          "published": null
+        },
+        {
+          "id": "E11",
+          "fact_need_id": "F3",
+          "claim": "Victims of UPI fraud should dial 1930 and also file a complaint on cybercrime.gov.in under the financial fraud section; quicker reporting improves recovery chances.",
+          "quote": "Victims should immediately dial 1930, the national cybercrime financial fraud helpline. The helpline coordinates with banks and payment intermediaries to try freezing the funds before they move out of the fraudster’s account.",
+          "url": "https://www.business-standard.com/finance/personal-finance/lost-money-by-scanning-a-qr-code-follow-these-steps-immediately-for-funds-126052800844_1.html",
+          "source_name": "Business Standard",
+          "title": "Lost money by scanning a QR code? Follow these steps immediately for funds",
+          "source_type": "news",
+          "published": "2026-05-28"
+        }
+      ],
+      "claim_checks": [
+        {
+          "sentence_id": 20,
+          "sentence": "The same advice says to reject unknown collect requests, to verify the beneficiary name before approving payments, and never to scan QR codes sent by strangers [E8].",
+          "cited": [
+            "E8"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E8 lists all three precautions: reject unknown collect requests, verify the beneficiary name before approving payments, and never scan QR codes sent by strangers.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 23,
+          "sentence": "First, try your UPI app: open the transaction history, select the payment, tap UPI HELP, choose the reason and confirm [E7].",
+          "cited": [
+            "E7"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E7 gives the same steps: transaction history, select the transaction, UPI HELP, select the reason and confirm.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 24,
+          "sentence": "If the problem is a fraudulent transaction, NPCI says to connect with your bank [E6].",
+          "cited": [
+            "E6"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E6 says that for a fraudulent transaction complaint, users should connect with their bank.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 26,
+          "sentence": "For a merchant payment where the shop got no confirmation, the reversal is due within T + 5 days, with ₹100 per day of compensation for delay beyond that [E2].",
+          "cited": [
+            "E2"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E2 states auto-reversal within T + 5 days for a merchant payment with no confirmation, and ₹100 per day if the delay goes beyond T + 5 days.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 28,
+          "sentence": "If you still get no answer, you can register a complaint with the RBI Integrated Ombudsman Scheme [E3].",
+          "cited": [
+            "E3"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E3 says customers who do not get redress within the TAT can register a complaint with the RBI Integrated Ombudsman Scheme.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 31,
+          "sentence": "The Ministry of Home Affairs runs a toll-free helpline, 1930, for reporting financial frauds [E4].",
+          "cited": [
+            "E4"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E4 says the MHA has operationalized toll-free helpline 1930 for reporting financial frauds.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 32,
+          "sentence": "Victims are advised to dial it at once, because the helpline works with banks and payment intermediaries to try to freeze the funds before they move out of the fraudster's account [E11].",
+          "cited": [
+            "E11"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E11 says victims should immediately dial 1930, and that the helpline coordinates with banks and payment intermediaries to try freezing funds before they leave the fraudster's account.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 38,
+          "sentence": "The presumptive taxation scheme allows certain taxpayers, such as small businesses, to declare income at a prescribed rate of turnover or receipts, without maintaining regular accounts or undergoing audits [E9].",
+          "cited": [
+            "E9"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E9 states this almost verbatim.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 41,
+          "sentence": "GST-registered businesses must retain books of accounts and other records for 72 months (6 years) from the due date of furnishing the annual return for the year relating to those records [E10].",
+          "cited": [
+            "E10"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E10 states the 72 months (6 years) retention period from the due date of the annual return for the relevant year.",
+          "fix_hint": "",
+          "needs_new_source": false
+        },
+        {
+          "sentence_id": 43,
+          "sentence": "SIDBI has launched the GST Sahay app, which offers small value credit to micro enterprises based on their invoices and trade data [E5].",
+          "cited": [
+            "E5"
+          ],
+          "verdict": "SUPPORTED",
+          "reason": "E5 says SIDBI launched the GST Sahay app for invoice-based small value credit to micro enterprises using trade data.",
+          "fix_hint": "",
+          "needs_new_source": false
+        }
+      ],
+      "stats": {
+        "status": "shipped_with_warnings",
+        "warnings": [
+          "Fact-check budget spent; the safety net removed 1 unverified sentence(s)."
+        ],
+        "rounds": {
+          "writer_passes": 6,
+          "editor_rounds": 3,
+          "fact_check_rounds": 3
+        },
+        "editor_approved": true,
+        "editor_scores": {
+          "tone": 4,
+          "clarity": 4,
+          "grammar": 5,
+          "jargon_free": 4,
+          "flow": 4,
+          "style_guide": 4
+        },
+        "fact_check": "10/11 claims supported; 1 partial, 0 unsupported, 0 uncited; 7/7 links OK",
+        "fact_check_passed": false,
+        "links": [
+          {
+            "url": "https://www.business-standard.com/finance/personal-finance/lost-money-by-scanning-a-qr-code-follow-these-steps-immediately-for-funds-126052800844_1.html",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.business-standard.com/finance/personal-finance/lost-money-by-scanning-a-qr-code-follow-these-steps-immediately-for-funds-126052800844_1.html",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.npci.org.in/uploads/UPI_Help_Brand_Guidelines_86c8c28922.pdf",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.npci.org.in/uploads/UPI_Help_Brand_Guidelines_86c8c28922.pdf",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.rbi.org.in/Commonperson/english/Scripts/Notification.aspx?Id=3074",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.rbi.org.in/Commonperson/english/Scripts/Notification.aspx?Id=3074",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1814120",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1814120&reg=48&lang=2",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/PressNoteDetails.aspx?NoteId=155163&ModuleId=3",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/PressNoteDetails.aspx?NoteId=155163&ModuleId=3&reg=48&lang=2",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://tutorial.gst.gov.in/downloads/news/welcome_kit_for_new_taxpyers.pdf",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://tutorial.gst.gov.in/downloads/news/welcome_kit_for_new_taxpyers.pdf",
+            "error": null,
+            "via": "direct"
+          },
+          {
+            "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2294261&reg=48&lang=1",
+            "ok": true,
+            "status": 200,
+            "final_url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2294261&reg=48&lang=1",
+            "error": null,
+            "via": "direct"
+          }
+        ],
+        "removed_sentences": [
+          "NPCI and banks advise users never to enter a UPI PIN to receive money, and not to share OTPs, the one-time codes sent to your phone, or UPI PINs [E8]."
+        ],
+        "missing_fact_needs": [
+          "What do official or reputable sources report about the scale of digital payment fraud or the number of UPI fraud cases in a recent year?"
+        ]
+      }
+    }
+  ],
+  "outline": {
+    "book_title": "Pay Me on UPI: How Digital Payments Changed Small Business in India",
+    "chapters": [
+      {
+        "number": 1,
+        "title": "From Coins and Change to a Scan: How We Got Here",
+        "goal": "The reader understands what UPI is, who built it, why it was created and how big it has become, so they feel the shift is real, safe to join and not as complicated as it sounds.",
+        "narrative_arc": "Open at a busy kirana counter where the owner is short of small change and a customer has only a large note. Step back to explain what UPI is in plain terms and who created it and why. Walk through how it grew from a new idea into an everyday habit across small shops, chai stalls and vegetable carts. Close by reassuring the reader that they are joining something already trusted by millions of shopkeepers.",
+        "key_points": [
+          "The everyday problems of cash: lack of change, trips to the bank, counting and carrying money",
+          "What UPI is in simple words, and the idea of paying from one bank account to another using a phone",
+          "Who runs UPI (NPCI) and who oversees the payment system (RBI)",
+          "How quickly UPI grew, and why that matters to a new shop owner",
+          "Why even the smallest sellers, such as street vendors, have joined"
+        ],
+        "fact_needs": [
+          {
+            "id": "F1",
+            "question": "What is NPCI, when was it set up and who regulates it?",
+            "why": "Gives the reader a trustworthy, official name behind UPI and shows it is not a private gimmick."
+          },
+          {
+            "id": "F2",
+            "question": "When was UPI launched to the public and by whom?",
+            "why": "Anchors the story in a clear starting point so the reader sees how recent and how fast the change has been."
+          },
+          {
+            "id": "F3",
+            "question": "How many UPI transactions and what total value were recorded in a recent full month, according to NPCI?",
+            "why": "Shows the scale of adoption so the reader feels confident that customers already expect to pay this way."
+          },
+          {
+            "id": "F4",
+            "question": "How many UPI transactions were recorded in the first full year after launch compared with the most recent full financial year?",
+            "why": "Illustrates the growth story from a trickle to everyday habit."
+          },
+          {
+            "id": "F5",
+            "question": "How many banks are live on UPI, according to NPCI?",
+            "why": "Reassures the shop owner that nearly any customer's bank account will work."
+          },
+          {
+            "id": "F6",
+            "question": "Which UPI apps handle the largest share of transactions, according to NPCI data?",
+            "why": "Helps the owner understand which apps customers are likely to use at the counter."
+          },
+          {
+            "id": "F7",
+            "question": "Has the government or RBI run any initiative or scheme to bring street vendors and small merchants onto digital payments?",
+            "why": "Shows even the smallest sellers are welcomed, and points to support the reader can look up."
+          }
+        ],
+        "takeaway_idea": "UPI is a widely used, officially run system that your customers already know, so accepting it is a normal part of running a shop and not a risky experiment."
+      },
+      {
+        "number": 2,
+        "title": "Setting Up Your Shop to Get Paid",
+        "goal": "The reader knows exactly what they need to start accepting UPI payments today and what it will cost them, and feels capable of doing it without technical help.",
+        "narrative_arc": "Start with a new shop owner on opening morning with a blank wall and a customer asking for a QR code. Explain step by step what is needed: a bank account, a UPI app or merchant app and a QR code. Clarify how money reaches the bank account and what, if anything, it costs to accept payments. End with a simple routine for checking that each payment has really arrived.",
+        "key_points": [
+          "What a QR code, a UPI ID and a UPI PIN are, and how each is used",
+          "What a shopkeeper needs to start: a bank account, a phone and a QR code from a bank or app",
+          "Personal account versus merchant or business account and what the difference means",
+          "How a payment reaches the owner's account and how quickly it settles",
+          "Whether accepting UPI costs the shopkeeper anything, including what the government decided about merchant charges (MDR)",
+          "How to confirm a payment arrived, using a soundbox or the app's notification and history"
+        ],
+        "fact_needs": [
+          {
+            "id": "F1",
+            "question": "What does NPCI say a person or merchant needs in order to accept payments through UPI?",
+            "why": "Gives the reader a clear, official checklist to follow."
+          },
+          {
+            "id": "F2",
+            "question": "How does NPCI or RBI describe a QR code payment on UPI, and what is the difference between static and dynamic QR codes?",
+            "why": "Lets the reader choose the right kind of QR code for a counter or a bigger bill."
+          },
+          {
+            "id": "F3",
+            "question": "What did the government decide about merchant discount rate (MDR) on UPI payments to merchants, and when?",
+            "why": "Answers the most common worry about cost with an official decision."
+          },
+          {
+            "id": "F4",
+            "question": "What is the per-transaction limit for UPI payments, and does it differ for certain merchant categories?",
+            "why": "Helps the owner know what sort of bills can be paid by UPI."
+          },
+          {
+            "id": "F5",
+            "question": "How quickly does money from a UPI payment reach the receiver's bank account, according to NPCI or RBI?",
+            "why": "Reassures the owner about cash flow and explains settlement."
+          },
+          {
+            "id": "F6",
+            "question": "How many merchants or QR codes are enabled for UPI acceptance, according to NPCI or RBI data?",
+            "why": "Shows how many other small shops already use this setup."
+          },
+          {
+            "id": "F7",
+            "question": "Which banks or UPI apps offer free QR codes or merchant onboarding for small shops, and what do they say it involves?",
+            "why": "Gives the owner an actionable next step to get a QR code."
+          }
+        ],
+        "takeaway_idea": "Getting started takes only a bank account, a phone and a QR code, so set one up this week and place it where every customer can see it."
+      },
+      {
+        "number": 3,
+        "title": "Staying Safe and Growing with Digital Payments",
+        "goal": "The reader feels equipped to avoid common frauds, keep tidy records and use digital payment history to grow their business, ending the book confident and motivated.",
+        "narrative_arc": "Begin with a shopkeeper nearly fooled by a fake payment screenshot, to show that care at the counter matters. Move on to simple safety habits: checking the actual bank or app notification, never sharing a PIN and knowing where to complain. Then show how a digital record helps with daily accounts, taxes and loans. End on encouragement about how digital payments open doors for small businesses.",
+        "key_points": [
+          "Common frauds shopkeepers face, such as fake screenshots and requests to enter a PIN to receive money",
+          "Never sharing a PIN, and why receiving money never needs one",
+          "What to do if a payment goes wrong: the app, the bank and the official complaint routes",
+          "How digital records make daily accounting and tax filing easier",
+          "How a payment history can help a small business get credit",
+          "Small steps to grow: displaying the QR code, offering both cash and UPI, and learning from sales patterns"
+        ],
+        "fact_needs": [
+          {
+            "id": "F1",
+            "question": "What guidance has NPCI or RBI issued to the public on avoiding UPI fraud, including advice on entering a PIN?",
+            "why": "Gives the reader authoritative safety rules in plain form."
+          },
+          {
+            "id": "F2",
+            "question": "How can a user or merchant raise a complaint about a failed or disputed UPI transaction, according to NPCI or RBI?",
+            "why": "Gives a clear route to follow if something goes wrong."
+          },
+          {
+            "id": "F3",
+            "question": "What is the national cyber crime helpline number and reporting portal for financial fraud?",
+            "why": "Gives the reader a concrete place to report fraud quickly."
+          },
+          {
+            "id": "F4",
+            "question": "What do official or reputable sources report about the scale of digital payment fraud or the number of UPI fraud cases in a recent year?",
+            "why": "Explains why caution matters, with honest numbers rather than fear."
+          },
+          {
+            "id": "F5",
+            "question": "What rules or timelines apply to refunds or reversal of failed UPI transactions, according to RBI or NPCI?",
+            "why": "Reassures the owner that failed payments have a defined remedy."
+          },
+          {
+            "id": "F6",
+            "question": "What government or RBI initiatives allow small businesses to use digital transaction records to get loans, such as schemes linked to digital payment history?",
+            "why": "Shows a concrete way digital records help a business grow."
+          },
+          {
+            "id": "F7",
+            "question": "What do GST or income tax authorities say about maintaining records of digital receipts for small businesses?",
+            "why": "Shows how UPI records simplify tax compliance and bookkeeping."
+          }
+        ],
+        "takeaway_idea": "Trust the bank notification and never your customer's screenshot, and keep your digital record, because it protects you today and helps you grow tomorrow."
+      }
+    ],
+    "style_guide": {
+      "reader_persona": "Meena, a woman in her thirties opening her first general store in a small town after years of helping in her family's home. She is comfortable with a smartphone and WhatsApp but has never run a business or dealt with a bank beyond a savings account.",
+      "voice": "A warm, experienced mentor talking across the counter over a cup of chai. Encouraging and patient, never condescending, with practical examples from everyday shop life. Speaks plainly, admits that new things feel odd at first and always moves from worry to a clear next step.",
+      "do": [
+        "Use plain English that a new shop owner would use in everyday speech.",
+        "Keep sentences short and clear, with one idea at a time.",
+        "Explain every technical term in one sentence the first time it appears, and use it normally afterwards.",
+        "Write in flowing paragraphs, with no bullet points, lists or subheadings inside chapters.",
+        "Open each chapter with a concrete everyday scene such as a kirana counter, a chai stall or a tailor's shop.",
+        "Put a number in brackets after every fact, figure or date, matching the reference list at the chapter's end.",
+        "Speak to the reader directly as 'you', warmly and naturally.",
+        "Close each chapter with a single line beginning 'Takeaway:' that gives one practical idea."
+      ],
+      "dont": [
+        "Do not use hype words like revolutionary, game-changing or unstoppable.",
+        "Do not use jargon without explaining it first.",
+        "Do not address the reader as 'dear reader'.",
+        "Do not state any fact, figure or date without a citation.",
+        "Do not use bullet points, lists or headings inside a chapter.",
+        "Do not scare or lecture the reader about fraud or cost; stay calm and practical.",
+        "Do not explain the same term again in a later chapter.",
+        "Do not shift tone between chapters or become formal and academic."
+      ],
+      "glossary": [
+        {
+          "term": "UPI (Unified Payments Interface)",
+          "plain_explanation": "UPI is a system that lets you send money straight from one bank account to another using your phone.",
+          "introduced_in_chapter": 1
+        },
+        {
+          "term": "NPCI (National Payments Corporation of India)",
+          "plain_explanation": "NPCI is the organisation that built and runs UPI and other retail payment systems in India.",
+          "introduced_in_chapter": 1
+        },
+        {
+          "term": "RBI (Reserve Bank of India)",
+          "plain_explanation": "The RBI is India's central bank, which sets the rules for banks and payment systems.",
+          "introduced_in_chapter": 1
+        },
+        {
+          "term": "UPI app",
+          "plain_explanation": "A UPI app is a phone app that connects to your bank account so you can send and receive money.",
+          "introduced_in_chapter": 1
+        },
+        {
+          "term": "Digital payment",
+          "plain_explanation": "A digital payment is any payment made through a phone, card or bank instead of with cash.",
+          "introduced_in_chapter": 1
+        },
+        {
+          "term": "QR code",
+          "plain_explanation": "A QR code is a small square pattern that a customer scans with their phone camera to pay you.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "VPA / UPI ID",
+          "plain_explanation": "A UPI ID, also called a virtual payment address, is like an email address for your bank account that people can use to pay you without knowing your account number.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "UPI PIN",
+          "plain_explanation": "A UPI PIN is a secret number that you enter to send money and that you should never share with anyone.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "Merchant account",
+          "plain_explanation": "A merchant account is a bank account or app profile set up for a business to receive customer payments.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "Static and dynamic QR code",
+          "plain_explanation": "A static QR code is one fixed code that customers scan and then type in the amount, while a dynamic QR code is made fresh for each bill with the amount already filled in.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "MDR (Merchant Discount Rate)",
+          "plain_explanation": "MDR is a fee that a shop may be charged by its bank each time a customer pays by card or other digital means.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "Settlement",
+          "plain_explanation": "Settlement is the step where the money from a payment actually lands in your bank account.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "Soundbox",
+          "plain_explanation": "A soundbox is a small speaker at the counter that announces aloud when a payment has arrived in your account.",
+          "introduced_in_chapter": 2
+        },
+        {
+          "term": "Payment screenshot fraud",
+          "plain_explanation": "This is a trick where a customer shows a fake picture of a payment on their phone even though no money was sent.",
+          "introduced_in_chapter": 3
+        },
+        {
+          "term": "Collect request",
+          "plain_explanation": "A collect request is a message asking you to approve a payment out of your account, so you should never approve one when you are expecting to receive money.",
+          "introduced_in_chapter": 3
+        },
+        {
+          "term": "Reversal",
+          "plain_explanation": "A reversal is when money from a failed or wrongly processed payment is sent back to the person who paid.",
+          "introduced_in_chapter": 3
+        }
+      ],
+      "sample_paragraph": "When you open your shop for the first time, it can feel like everyone else knows a secret you missed. They do not. Most of us learn by doing one small thing at a time, and then another. Start with the counter in front of you. Think about who stands there each day, what they carry in their hands and what they ask you for. Once you see your own shop clearly, the next step becomes simpler, and you will find you are more ready than you thought."
+    }
+  }
+}
