@@ -256,6 +256,8 @@ These go into `config.yaml` under `models`, and a single `pricing.py` prices bot
 
 Approved direction: this is an assignment, not a product, so API spend stays minimal.
 
+**The two profiles are not two designs.** `showcase` *is* the system: Opus for judgement, Sonnet for the research loop and editing, Haiku for tagging, exactly as section 5 describes. It produces the submitted book and is what the README documents. `dev` exists only while building: it runs the same graph, same prompts, same routers and same checks on Sonnet so that bugs in plumbing (loops that don't stop, a router that picks the wrong edge, a prompt placeholder left empty) surface at a fifth of the price. Model quality is irrelevant to those bugs. Once the pipeline runs clean on `dev`, one `showcase` run produces the book that ships.
+
 - **Two routing profiles in `config.yaml`:** `showcase` (the table in section 5; used for the submitted run) and `dev` (Sonnet 5.5 for every judgement role at `low`/`medium` effort, Haiku for tagging). A full `dev` run costs roughly $1.5-2. The dashboard's New run form and `bookwriter run --profile dev` select it.
 - **Single-chapter debug runs:** `bookwriter run --chapters 1` exercises the whole chapter loop at a third of the cost (about $0.60 on `dev`).
 - **No API spend for the frontend or tests:** the fake-LLM end-to-end test and replay mode cover both.
@@ -401,11 +403,11 @@ Repo hygiene is done (section 12). Not yet built: graph wiring and routers, runn
 ## 16. Inputs and their status
 
 1. **Plan:** approved on 3 October.
-2. **API keys in `backend/.env`** (file created with empty values; Shikhar fills them in, never pasted in chat):
+2. **API keys in `backend/.env`:** in place since 3 October (never pasted in chat).
    - `ANTHROPIC_API_KEY` from console.anthropic.com with **about $10 of credit** (section 8.3a). The Max plan covers Claude Code, not API calls. If runs hit 429s, set `parallel_chapters: 1`.
    - `TAVILY_API_KEY`, free at tavily.com.
    Nothing in M1 can be validated without these; they are the critical path for the next session.
-3. **GitHub:** username `shikharsumantech14`. The repository does not exist yet; it is created **public** at M1.5 (first push). Proposed name: `multi-agent-book-writer`.
+3. **GitHub:** username `shikharsumantech14`, repository **`book-writer`** (public). Shikhar creates it and does every push; commits are made locally with plain messages and no AI attribution.
 4. **Docker:** not installed; stays out unless Docker Desktop is installed before M4.
 
 ## 17. Decisions (approved defaults in bold)
