@@ -14,8 +14,8 @@ scorecard passed. Chapters 2 and 3 carry one warning each: the Editor's last sty
 because its send-back budget ran out. The run's [event log](docs/sample-output/events.jsonl) and
 [report](docs/sample-output/run_report.json) are committed next to it.
 
-**Status:** the agent engine, CLI, research MCP server, HTTP API with live streaming and tests are done
-(milestones M1 and M2). The live dashboard comes next. The full design, milestones and cost plan are in
+**Status:** the agent engine, CLI, research MCP server, HTTP API with live streaming, the dashboard and the
+tests are done (milestones M1 to M3). The full design, milestones and cost plan are in
 [docs/PLAN.md](docs/PLAN.md).
 
 ## Quick start
@@ -51,6 +51,19 @@ Other commands, none of which call a model:
 | `uv run pytest` | Runs the tests |
 
 The committed sample run works with all of them, e.g. `uv run bookwriter replay ../docs/sample-output/events.jsonl`.
+
+To open the dashboard, start the API, then the Next.js app in a second terminal (needs Node 20+):
+
+```bash
+uv run bookwriter serve
+```
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Then open http://localhost:3000. The committed sample run is listed, so the dashboard can be explored, and its
+run replayed, without any API key.
 
 ## How it works
 
@@ -206,6 +219,18 @@ Finished runs stream from their recording, and `?speed=N` replays them with thei
 faster. The dashboard can therefore be built and demonstrated against recorded runs, including the committed
 sample, without spending anything. One run at a time: a second `POST /runs` while one is going returns 409.
 
+## Dashboard
+
+A Next.js + shadcn/ui app in [`frontend/`](frontend/) that reads everything from the API. Each agent has one
+colour and one icon, used the same way everywhere ([design system](frontend/DESIGN.md)).
+
+| Screen | What it shows |
+|---|---|
+| Runs | Run history with status, scorecard, cost and time; New run, with routing per agent and a cost estimate from measured runs |
+| Run | The agent graph from `GET /graph`: agents light up as they work, with chips showing which chapters are at each step, and a send-back animates its loop in the reviewer's colour. Chapter lanes with round counters, an activity feed, a cost and token ticker. Live while a run is going; Replay for a finished one. The outline review dialog appears here when a run waits for it |
+| Book | The book in a serif reading layout. Hover any `[n]` for the source, the quote verified on that page, the link status and the Fact-checker's verdict; a sources panel per chapter |
+| Report | The scorecard against the brief, chapter by chapter; cost per agent, model and chapter with token kinds; the Planner's outline, style guide and glossary |
+
 ## Use the research tools from Claude (MCP)
 
 The Researcher and Fact-checker reach the web through an MCP server
@@ -250,6 +275,10 @@ backend/
     scorecard.py         grades a book against the brief
     estimate.py          pre-run cost estimate from measured runs
   tests/                 unit tests and a fake-LLM end-to-end run (no API cost)
+frontend/                Next.js dashboard (DESIGN.md: the design system)
+  src/app/               routes: runs, run (live/replay), book, report
+  src/components/        agent graph, chapter lanes, feed, book reader, scorecard, cost charts
+  src/lib/               API types, agent identities, the event-stream reducer
 docs/
   PLAN.md                the approved design and milestones
   DEV_COST.md            tokens spent building the project
@@ -266,5 +295,5 @@ uv run ruff check src tests ../scripts
 ```
 
 The end-to-end test runs the whole graph with a scripted fake Claude client and canned web pages, driving
-every send-back loop at least once at no API cost. CI runs lint, the tests and the scorecard on the committed
-sample book on every push.
+every send-back loop at least once at no API cost. CI runs on every push: for the backend, lint, the tests and
+the scorecard on the committed sample book; for the dashboard, lint, a type-check and a production build.

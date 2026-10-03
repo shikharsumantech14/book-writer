@@ -406,7 +406,9 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 One deliberate change from section 9: runs and events are not copied into SQLite tables. A run is its folder (`events.jsonl`, `run_report.json`, the book), which the CLI, the API and the committed sample already share; a second copy in a database would be a second source of truth to keep in step. SQLite holds only the LangGraph checkpoints. The runs list is read from the folders; live runs are served from memory.
 
-**Next:** M3 (dashboard), built against recorded runs.
+**M3 (dashboard) is done.** Next.js 16 + TypeScript + Tailwind 4 + shadcn/ui (Radix, Nova preset) + React Flow + Recharts in `frontend/`, built and checked against recorded runs only (no API spend). Four screens: Runs (with New run), Run (agent graph from `GET /graph` with live highlighting, chapter lanes, feed, cost ticker, replay, outline-review dialog), Book (serif reader, citation hover cards with the verified quote and fact-check result, sources panel) and Report (scorecard, cost, the Planner's outline). The design system is in `frontend/DESIGN.md`: CSS-variable tokens for light and dark, and an agent palette checked with a colour-blindness validator. CI adds lint, a type-check and a production build for the dashboard. The fifth screen in section 10, a `/design` page, was optional and is left out; DESIGN.md documents the system instead.
+
+**Next:** M4 (screenshots, generated diagram export, final DEV_COST) and M5 (ship).
 
 ---
 
