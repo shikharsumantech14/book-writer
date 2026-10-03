@@ -78,6 +78,11 @@ def _print_usage(usage: dict) -> None:
     )
 
 
+def _save_svg(path: Path, title: str) -> None:
+    """Save everything printed so far as a terminal-style SVG (LF line endings on every OS)."""
+    path.write_text(console.export_svg(title=title), encoding="utf-8", newline="\n")
+
+
 def _print_scorecard(card: dict | None) -> None:
     if not card:
         console.print("[red]No scorecard: the run produced no chapters.[/red]")
@@ -152,7 +157,7 @@ def report(
     _print_usage(data["usage"])
     _print_scorecard(data["scorecard"])
     if svg:
-        console.save_svg(str(svg), title=f"bookwriter report {data['run_id']}")
+        _save_svg(svg, f"bookwriter report {data['run_id']}")
 
 
 @app.command()
@@ -198,7 +203,7 @@ def replay(
         previous = e["ts"]
         _print_event(e)
     if svg:
-        console.save_svg(str(svg), title="bookwriter run (replayed)")
+        _save_svg(svg, "bookwriter run (replayed)")
 
 
 @app.command()
