@@ -400,7 +400,9 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 **Measured, not estimated (section 8.3):** four `dev` runs cost $3.42 in total. The full three-chapter `dev` book took 5 minutes and $1.61 (Researcher $0.62, Writer $0.50, Editor $0.19, Fact-checker $0.18, Planner, tagger and Chief Editor $0.12 together). The three single-chapter runs before it found and fixed lint false positives on names like "UPI123Pay", a sentence splitter that broke on "Dr.", claims that said more than their quotes, and Editor rules that contradicted the Writer's. The sample book in `docs/sample-output/` is from the full `dev` run.
 
-**Next:** the single `showcase` run (estimated $3-4 from the `dev` measurements), then M2 (service) and M3 (dashboard).
+**Showcase run (the submitted book):** $2.93 in 8 minutes, under the $3-4 estimate: Writer $1.40, Researcher $0.65, Fact-checker $0.34, Editor $0.22, Planner $0.17, Chief Editor $0.09, tagger $0.05. Scorecard passed; 29 of 29 claims supported; chapters 2 and 3 shipped with the Editor's last style notes unapplied. It replaced the `dev` book in `docs/sample-output/`. Total API spend so far: $6.35.
+
+**Next:** M2 (service) and M3 (dashboard).
 
 ---
 

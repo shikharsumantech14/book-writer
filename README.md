@@ -7,9 +7,12 @@ Fact-checker and Chief Editor) research and write *Pay Me on UPI: How Digital Pa
 in India*, a three-chapter book for first-time shop owners. Every fact, figure and date carries a numbered
 citation to a real page that the system read and verified itself.
 
-**Read the book:** [docs/sample-output/book.md](docs/sample-output/book.md). It's from a full run on the cheap
-`dev` routing profile; the final `showcase` run will replace it. It passes the system's own scorecard: every
-chapter is 600-900 words, every remaining claim is supported by its source, and all links work.
+**Read the book:** [docs/sample-output/book.md](docs/sample-output/book.md) (or the
+[HTML version](docs/sample-output/book.html)). It comes from one full run on the `showcase` profile: 2,501 words,
+16 references, 29 of 29 checked claims supported by their sources, every link working, and the system's own
+scorecard passed. Chapters 2 and 3 carry one warning each: the Editor's last style notes were not applied,
+because its send-back budget ran out. The run's [event log](docs/sample-output/events.jsonl) and
+[report](docs/sample-output/run_report.json) are committed next to it.
 
 **Status:** the agent engine, CLI, research MCP server and tests are done (milestone M1). The FastAPI service
 and the live dashboard come next. The full design, milestones and cost plan are in [docs/PLAN.md](docs/PLAN.md).
@@ -143,23 +146,24 @@ Every model call is metered: tokens by kind (input, output, cache read, cache wr
 `config.yaml`. An unknown model ID fails loudly instead of counting as $0, and each run has a cost cap
 (`--max-cost`, default $5).
 
-Measured on the [sample run](docs/sample-output/run_report.json): the full three-chapter book on the `dev`
-profile took 5 minutes and **$1.61**.
+Measured, not estimated. The [sample book](docs/sample-output/run_report.json) cost **$2.93** on the
+`showcase` profile, taking 8 minutes. The same three-chapter book on the `dev` profile cost $1.61 and took 5 minutes:
 
-| Agent | Calls | Cost |
-|---|---:|---:|
-| Researcher | 32 | $0.62 |
-| Writer | 16 | $0.50 |
-| Editor | 9 | $0.19 |
-| Fact-checker | 8 | $0.18 |
-| Claim tagger | 8 | $0.05 |
-| Planner | 1 | $0.05 |
-| Chief Editor | 1 | $0.02 |
-| **Total** | 75 | **$1.61** |
+| Agent | `showcase` calls | `showcase` cost | `dev` cost |
+|---|---:|---:|---:|
+| Writer | 16 | $1.40 | $0.50 |
+| Researcher | 30 | $0.65 | $0.62 |
+| Fact-checker | 7 | $0.34 | $0.18 |
+| Editor | 9 | $0.22 | $0.19 |
+| Planner | 1 | $0.17 | $0.05 |
+| Chief Editor | 1 | $0.09 | $0.02 |
+| Claim tagger | 7 | $0.05 | $0.05 |
+| **Total** | 71 | **$2.93** | **$1.61** |
 
-Two-thirds of all prompt tokens were cheap cache reads: the Researcher's growing tool-loop history is cached,
-so each turn re-reads it at a fraction of the input price. The `showcase` run's measured numbers will be added
-here.
+Almost half the `showcase` cost is the Writer, the role whose output is graded directly; the rest of the
+Opus-for-judgement routing added about $0.40 over `dev`. Two-thirds of all prompt tokens were cheap cache
+reads: the Researcher's growing tool-loop history is cached, so each turn re-reads it at a fraction of the
+input price. Building and debugging the pipeline took four `dev` runs ($3.42 in total) before this one.
 
 How the system keeps tokens down: right-sized models per role, with effort set explicitly; code checks before
 any LLM review; compact tool outputs (top-ranked passages, not whole pages); the Writer sees only ids, claims and
