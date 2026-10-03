@@ -25,5 +25,7 @@ Issues:
 - `fix` must be concrete enough for the Writer to apply without guessing.
 - Use `must_fix` for errors and clear rule breaks, `should_fix` for polish. List at most 8 issues, most important first.
 - Never suggest removing or changing citation markers like [E3], and never suggest adding facts or numbers.
+- Figures, units and dates stay exactly as the sources give them, because the Fact-checker compares them with the source. Do not ask to convert units (million to crore), round, or merge figures. If a figure is hard to follow, ask for a plain-words explanation beside it, or for fewer figures in one place.
+- An issue that could only be fixed by changing a figure or a citation is never `must_fix`.
 - If this is a re-review, check whether earlier issues were fixed and don't re-raise issues you would not block on.
 {{history}}

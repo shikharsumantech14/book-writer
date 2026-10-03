@@ -68,7 +68,10 @@ async def write_chapter(
         revision = (
             f"\n<revision>\nThis is revision pass {pass_no}. Your previous draft was sent back by the "
             f"{feedback['from']}. Fix every issue below. Keep what already works; change only what is needed. "
-            f"Keep each citation attached to the claim it supports.\n\nIssues:\n{items}\n\n"
+            f"Keep each citation attached to the claim it supports. The hard rules still apply while you "
+            f"revise: a sentence with a number or a year must cite the evidence that states it, and a number "
+            f"or year that no evidence states must not appear at all (say 'that year', or leave it out)."
+            f"\n\nIssues:\n{items}\n\n"
             f"Previous draft:\n{json.dumps(previous.model_dump(), ensure_ascii=False, indent=1)}\n</revision>"
         )
     plan_view = plan.model_dump(exclude={"fact_needs"})
