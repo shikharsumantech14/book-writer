@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from bookwriter.graph import GRAPH_END, GRAPH_START, mermaid_block, sync_diagram
 from bookwriter.models import FinalChapter
 from bookwriter.render import book_markdown
@@ -27,9 +29,10 @@ def test_committed_sample_book_passes_the_scorecard(cfg):
     assert book == book_markdown(report["outline"]["book_title"], chapters)
 
 
-def test_readme_diagram_is_generated_from_the_graph():
-    readme = (REPO / "README.md").read_text(encoding="utf-8")
-    assert mermaid_block() in readme, "Regenerate it: uv run bookwriter graph --readme ../README.md"
+@pytest.mark.parametrize("doc", ["README.md", "docs/architecture.md"])
+def test_agent_graph_diagrams_are_generated_from_the_graph(doc):
+    text = (REPO / doc).read_text(encoding="utf-8")
+    assert mermaid_block() in text, f"Regenerate it: uv run bookwriter graph --readme ../{doc}"
 
 
 def test_sync_diagram_replaces_only_the_marked_block():
