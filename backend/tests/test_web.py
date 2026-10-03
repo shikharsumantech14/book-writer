@@ -191,3 +191,20 @@ async def test_dead_link_is_broken(monkeypatch):
 )
 def test_clean_title(title, url, source, expected):
     assert web.clean_title(title, url, source) == expected
+
+
+async def test_truncated_pdf_is_unreadable_not_a_crash(monkeypatch, tavily):
+    """A PDF that ends early must not crash read_page; the extract route gets a try instead."""
+    real_client = httpx.AsyncClient
+    handler = lambda request: httpx.Response(  # noqa: E731
+        200, headers={"content-type": "application/pdf"}, content=b"%PDF-1.7\n1 0 obj << /Type /Catalog"
+    )
+    monkeypatch.setattr(
+        web.httpx, "AsyncClient", lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw)
+    )
+
+    direct = await web._fetch_uncached("https://www.rbi.org.in/broken.pdf")
+    assert direct.ok and direct.text == "" and direct.error.startswith("Unreadable PDF")
+
+    page = await web.fetch_page("https://www.rbi.org.in/broken.pdf")
+    assert page.ok and page.via == "extract"

@@ -204,8 +204,11 @@ async def _fetch_uncached(url: str) -> PageDoc:
         return base
 
     if "pdf" in ctype or str(r.url).lower().endswith(".pdf"):
-        base.text, base.title = _pdf_text(r.content)
         base.site_name = publisher_for(url)
+        try:
+            base.text, base.title = _pdf_text(r.content)
+        except Exception as e:  # truncated or malformed PDF: no readable text, so the extract route gets a try
+            base.error = f"Unreadable PDF: {type(e).__name__}: {e}"
         return base
 
     html = r.text
