@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 
 from ..events import emit
-from ..models import ChapterDraft, ChapterPlan, Evidence, Outline
+from ..models import ChapterDraft, ChapterPlan, Evidence, FactNeed, Outline
 from ..prompts import render
 from ..state import Deps
 
@@ -21,6 +21,12 @@ def format_evidence(evidence: list[Evidence]) -> str:
         when = f", published {e.published}" if e.published else ""
         lines.append(f'[{e.id}] ({e.source_type}: {e.source_name}{when})\n  claim: {e.claim}\n  quote: "{e.quote}"')
     return "\n".join(lines) or "(no evidence found; write general guidance with no facts or figures)"
+
+
+def format_coverage(missing: list[FactNeed]) -> str:
+    if not missing:
+        return "(none: every planned question has evidence)"
+    return "\n".join(f"- {f.question}" for f in missing)
 
 
 def style_guide_text(outline: Outline) -> str:
@@ -49,6 +55,7 @@ async def write_chapter(
     outline: Outline,
     evidence: list[Evidence],
     *,
+    missing: list[FactNeed] | None = None,
     previous: ChapterDraft | None = None,
     feedback: dict | None = None,
     pass_no: int = 1,
@@ -75,6 +82,7 @@ async def write_chapter(
         new_terms=new_terms,
         known_terms=known_terms,
         evidence=format_evidence(evidence),
+        coverage=format_coverage(missing or []),
         words_min=b.words_min,
         words_max=b.words_max,
         words_target=(b.words_min + b.words_max) // 2,
@@ -94,6 +102,7 @@ async def write_chapter(
         user="Write the chapter now." if not revision else "Revise the chapter now.",
         output=ChapterDraft,
         chapter=plan.number,
+        revision=pass_no > 1,  # first drafts run at the role's effort, rewrites at its revision effort
     )
     draft.paragraphs = [p.strip() for p in draft.paragraphs if p.strip()]
     return draft

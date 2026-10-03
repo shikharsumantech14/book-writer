@@ -1,7 +1,7 @@
 """Chief editor: a whole-book consistency pass with guarded, exact-match edits.
 
 The model proposes find/replace edits; code applies them only if they keep the
-chapter's citations and figures intact and the chapter still passes lint.
+chapter's citations and figures intact and add no new lint issues.
 """
 
 from __future__ import annotations
@@ -19,6 +19,24 @@ from .writer import draft_text, style_guide_text
 
 def _figures(text: str) -> Counter:
     return Counter(re.findall(r"\d[\d,.]*", text))
+
+
+def _lint_keys(draft: ChapterDraft, evidence_ids: set[str], brief) -> set[tuple[str, str]]:
+    # Word-count details change with every edit; compare the length rule by name only.
+    return {(i.rule, "" if i.rule == "length" else i.detail) for i in lint(draft, evidence_ids, brief)}
+
+
+def guarded_apply(
+    draft: ChapterDraft, edit: ChiefEdit, evidence_ids: set[str], brief
+) -> tuple[ChapterDraft | None, str]:
+    """Apply one edit if it passes every guard: unique text, same citations, same figures,
+    and no lint issue the chapter didn't already have."""
+    new, why = apply_edit(draft, edit)
+    if new is None:
+        return None, why
+    if _lint_keys(new, evidence_ids, brief) - _lint_keys(draft, evidence_ids, brief):
+        return None, "edit would introduce a lint issue"
+    return new, "applied"
 
 
 def apply_edit(draft: ChapterDraft, edit: ChiefEdit) -> tuple[ChapterDraft | None, str]:
@@ -52,12 +70,9 @@ async def harmonize(
         if edit.chapter not in out:
             rejected.append({**edit.model_dump(), "why": "unknown chapter"})
             continue
-        new, why = apply_edit(out[edit.chapter], edit)
+        new, why = guarded_apply(out[edit.chapter], edit, evidence_ids[edit.chapter], deps.cfg.brief)
         if new is None:
             rejected.append({**edit.model_dump(), "why": why})
-            continue
-        if lint(new, evidence_ids[edit.chapter], deps.cfg.brief):
-            rejected.append({**edit.model_dump(), "why": "chapter would fail lint"})
             continue
         out[edit.chapter] = new
         applied.append(edit.model_dump())

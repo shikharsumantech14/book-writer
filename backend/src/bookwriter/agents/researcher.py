@@ -13,7 +13,7 @@ from typing import Any
 
 from ..events import emit
 from ..llm import ToolSpec
-from ..models import ChapterPlan, Evidence, Outline
+from ..models import ChapterPlan, Evidence, FactNeed, Outline
 from ..prompts import render
 from ..state import Deps
 from ..tools import web
@@ -64,6 +64,7 @@ async def research_chapter(
                 chapter=ch,
                 url=args["url"],
                 source_type=data.get("source_type"),
+                via=data.get("via", "direct"),
             )
         return out
 
@@ -86,14 +87,15 @@ async def research_chapter(
             )
             return f"Rejected: {check.get('reason', 'quote not found')} (similarity {check.get('similarity', 0)})."
         page = read_urls[url]
+        source_name = (args.get("source_name") or page.get("publisher") or web.publisher_for(url)).strip()
         ev = Evidence(
             id=f"E{len(evidence) + 1}",
             fact_need_id=args.get("fact_need_id"),
             claim=args["claim"].strip(),
             quote=args["quote"].strip(),
             url=url,
-            source_name=(args.get("source_name") or page.get("publisher") or web.publisher_for(url)).strip(),
-            title=(args.get("title") or page.get("title") or url).strip(),
+            source_name=source_name,
+            title=web.clean_title(args.get("title") or page.get("title") or url, url, source_name),
             source_type=web.classify_source(url, cfg),
             published=(args.get("published") or page.get("published") or None),
         )
@@ -164,3 +166,9 @@ async def research_chapter(
         tool_calls=result.tool_calls,
     )
     return evidence
+
+
+def missing_fact_needs(plan: ChapterPlan, evidence: list[Evidence]) -> list[FactNeed]:
+    """Coverage: the planned questions no evidence answers. The Writer is told to write around them."""
+    answered = {e.fact_need_id for e in evidence}
+    return [f for f in plan.fact_needs if f.id not in answered]

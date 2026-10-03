@@ -25,6 +25,11 @@ Already explained in earlier chapters (use freely, at most a brief reminder):
 {{evidence}}
 </evidence_pack>
 
+<evidence_gaps>
+The Researcher found no reliable source for these planned questions. Do not state facts about them; if the chapter needs them, write around them with general guidance instead:
+{{coverage}}
+</evidence_gaps>
+
 Hard rules (checked by code):
 1. Length: {{words_min}}-{{words_max}} words across all paragraphs plus the takeaway. Aim for about {{words_target}}.
 2. Every fact, figure, date, statistic or named event must come from the evidence pack and carry its evidence id in square brackets right after the claim, e.g. "UPI was launched in 2016 [E2]." Use only ids that exist in the pack. Never add a fact that is not in the pack, even if you believe it is true. If the pack lacks a fact you want, write around it with general, uncited guidance instead.

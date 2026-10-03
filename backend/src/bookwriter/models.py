@@ -161,6 +161,7 @@ class LinkStatus(BaseModel):
     status: int | None = None
     final_url: str | None = None
     error: str | None = None
+    via: str | None = None  # "direct" or "extract": which route proved the page readable
 
 
 class FactCheckReport(BaseModel):
@@ -182,6 +183,24 @@ class ChiefEditorReport(BaseModel):
     edits: list[ChiefEdit]
 
 
+class ChapterResult(BaseModel):
+    """What a chapter subgraph hands back to the book graph."""
+
+    number: int
+    status: Literal["ok", "shipped_with_warnings"]
+    draft: ChapterDraft
+    evidence: list[Evidence]
+    missing_fact_needs: list[FactNeed] = []
+    editor_verdict: EditorVerdict | None = None
+    editor_approved: bool = False
+    fact_report: FactCheckReport | None = None
+    removed_sentences: list[ClaimCheck] = []
+    lint_issues: list[LintIssue] = []
+    rounds: dict[str, int] = {}
+    warnings: list[str] = []
+    log: list[dict] = []
+
+
 # ------------------------------------------------------------------------- output
 
 
@@ -190,6 +209,7 @@ class Reference(BaseModel):
     source_name: str
     title: str
     url: str
+    source_type: SourceType = "other"
     evidence_ids: list[str]
 
 
