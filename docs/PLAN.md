@@ -378,11 +378,11 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 ## 14. Submission deliverables
 
-- [ ] Public GitHub repo with README (how to run, architecture, agent design, cost story)
-- [ ] Architecture diagram: generated Mermaid in README and `docs/`, plus a PNG export
-- [ ] Screenshots: dashboard live run, terminal run, book reader
-- [ ] Generated book committed as `docs/sample-output/book.md`, `book.html`, `run_report.json`, `events.jsonl`
-- [ ] `docs/DEV_COST.md` with final numbers, summarised in the README
+- [x] Public GitHub repo with README (how to run, architecture, agent design, cost story)
+- [x] Architecture diagram: generated Mermaid in README and `docs/`, plus a PNG export
+- [x] Screenshots: dashboard live run, terminal run, book reader
+- [x] Generated book committed as `docs/sample-output/book.md`, `book.html`, `run_report.json`, `events.jsonl`
+- [x] `docs/DEV_COST.md` with final numbers, summarised in the README
 - [ ] Submit via the Google Form **and** email (the brief mentions both)
 
 ---
@@ -408,7 +408,9 @@ One deliberate change from section 9: runs and events are not copied into SQLite
 
 **M3 (dashboard) is done.** Next.js 16 + TypeScript + Tailwind 4 + shadcn/ui (Radix, Nova preset) + React Flow + Recharts in `frontend/`, built and checked against recorded runs only (no API spend). Four screens: Runs (with New run), Run (agent graph from `GET /graph` with live highlighting, chapter lanes, feed, cost ticker, replay, outline-review dialog), Book (serif reader, citation hover cards with the verified quote and fact-check result, sources panel) and Report (scorecard, cost, the Planner's outline). The design system is in `frontend/DESIGN.md`: CSS-variable tokens for light and dark, and an agent palette checked with a colour-blindness validator. CI adds lint, a type-check and a production build for the dashboard. The fifth screen in section 10, a `/design` page, was optional and is left out; DESIGN.md documents the system instead.
 
-**Next:** M4 (screenshots, generated diagram export, final DEV_COST) and M5 (ship).
+**M4 (polish) is done.** Screenshots of every dashboard screen and of the terminal, generated from the sample run (`docs/screenshots/`); `docs/architecture.md` with a system diagram and the agent graph generated from code, both exported as PNG; tests for the research MCP server's tools and for the dashboard's event reducer (held to the backend's report on the sample run), both in CI; a dashboard lockfile that installs on Linux; `bookwriter replay --quiet --svg` and `report --svg`; README with screenshots, architecture and how the project was built; DEV_COST regenerated.
+
+**Next:** M5: submit the repository link through the Google Form and by email.
 
 ---
 

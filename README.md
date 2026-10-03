@@ -14,9 +14,25 @@ scorecard passed. Chapters 2 and 3 carry one warning each: the Editor's last sty
 because its send-back budget ran out. The run's [event log](docs/sample-output/events.jsonl) and
 [report](docs/sample-output/run_report.json) are committed next to it.
 
-**Status:** the agent engine, CLI, research MCP server, HTTP API with live streaming, the dashboard and the
-tests are done (milestones M1 to M3). The full design, milestones and cost plan are in
-[docs/PLAN.md](docs/PLAN.md).
+**Status:** complete: agent engine, CLI, research MCP server, HTTP API with live streaming, dashboard, tests
+and CI (milestones M1 to M4). The design, milestones and cost plan are in [docs/PLAN.md](docs/PLAN.md); the
+architecture is in [docs/architecture.md](docs/architecture.md).
+
+![The live run view: agents light up per chapter while they work; the Editor's send-back to the Writer animates its loop](docs/screenshots/live-run.png)
+
+| Book reader: hover a citation for its verified quote | Report: the scorecard against the brief |
+|---|---|
+| ![Book reader](docs/screenshots/book.png) | ![Scorecard](docs/screenshots/report-scorecard.png) |
+| **Report: cost per agent, model and chapter** | **Runs, with the cost of every run** |
+| ![Cost](docs/screenshots/report-cost.png) | ![Runs](docs/screenshots/runs.png) |
+
+<details>
+<summary>The same run in the terminal</summary>
+
+![A run replayed in the terminal](docs/screenshots/terminal-run.svg)
+![The run's cost and scorecard in the terminal](docs/screenshots/terminal-report.svg)
+
+</details>
 
 ## Quick start
 
@@ -45,7 +61,7 @@ Other commands, none of which call a model:
 | Command | What it does |
 |---|---|
 | `uv run bookwriter report <run_id>` | Cost table and scorecard of a finished run |
-| `uv run bookwriter replay <run_id> --speed 20` | Replays a recorded run in the terminal with its original pacing |
+| `uv run bookwriter replay <run_id> --speed 20 --quiet` | Replays a recorded run in the terminal with its original pacing |
 | `uv run bookwriter serve` | Starts the HTTP API; interactive docs at http://localhost:8000/docs |
 | `uv run bookwriter graph` | Prints the agent graph as Mermaid |
 | `uv run pytest` | Runs the tests |
@@ -66,6 +82,8 @@ Then open http://localhost:3000. The committed sample run is listed, so the dash
 run replayed, without any API key.
 
 ## How it works
+
+![System architecture](docs/architecture.png)
 
 The agents never talk to each other directly. Each one reads and writes typed fields on a shared state
 (Pydantic models), and plain Python routers decide where the work goes next. Every review loop has a budget,
@@ -281,19 +299,43 @@ frontend/                Next.js dashboard (DESIGN.md: the design system)
   src/lib/               API types, agent identities, the event-stream reducer
 docs/
   PLAN.md                the approved design and milestones
+  architecture.md        system and agent-graph diagrams (+ PNG exports)
+  screenshots/           the dashboard and the terminal, from the sample run
   DEV_COST.md            tokens spent building the project
   sample-output/         the sample book, its event log and its run report
 scripts/dev_usage.py     generates DEV_COST.md
 ```
 
+## How it was built
+
+- **Plan first.** [docs/PLAN.md](docs/PLAN.md) was written and reviewed before any engine code: a second model
+  reviewed the first draft (section 0 records what changed and why), and the plan was approved before code was
+  written. Deviations are recorded in its status section.
+- **Milestones as commits.** Engine (M1), first push (M1.5), service (M2), dashboard (M3) and polish (M4), each
+  a run of small conventional commits, tagged `m1-engine` to `m4-polish`. The pushed state passed CI at every step.
+- **Cheap runs first.** Every paid run was approved in advance and capped. Three single-chapter `dev` runs and
+  one full `dev` book ($3.42 together) found the real bugs before the one `showcase` run ($2.93): a lint rule
+  that read "UPI123Pay" as an uncited figure, a sentence splitter that broke on "Dr.", evidence claims that said
+  more than their quotes, a Fact-checker stricter than its own instructions, Editor rules that contradicted the
+  Writer's, and a truncated PDF that crashed page reading. Each fix came with a test. Total API spend for the
+  whole project: $6.35.
+- **Measured development cost.** Building this with Claude Code used about $58 of model time at API list prices
+  (it ran on a subscription, so nothing was charged per token); 99% of those tokens were cheap cache reads.
+  Broken down by session and model in [docs/DEV_COST.md](docs/DEV_COST.md), generated from the session
+  transcripts.
+
 ## Development
 
 ```bash
-cd backend
-uv run pytest
-uv run ruff check src tests ../scripts
+cd backend && uv run pytest && uv run ruff check src tests ../scripts
 ```
 
-The end-to-end test runs the whole graph with a scripted fake Claude client and canned web pages, driving
-every send-back loop at least once at no API cost. CI runs on every push: for the backend, lint, the tests and
-the scorecard on the committed sample book; for the dashboard, lint, a type-check and a production build.
+```bash
+cd frontend && npm test && npm run lint && npm run typecheck
+```
+
+The backend's end-to-end test runs the whole graph with a scripted fake Claude client and canned web pages,
+driving every send-back loop at least once at no API cost; other tests cover lint, routers and stop conditions,
+quote verification, the fetch fallback, the MCP server, the API (including outline review and cancellation),
+the committed sample book and the generated diagrams. The dashboard's tests hold its event reducer to the
+backend's report on the sample run. CI runs all of it, plus a production build of the dashboard, on every push.
