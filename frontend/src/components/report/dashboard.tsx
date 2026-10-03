@@ -200,12 +200,12 @@ function ScoreMatrix({ card }: { card: Scorecard }) {
   const rules = card.chapters[0]?.checks.map((c) => c.rule) ?? []
   return (
     <div className="-mx-1 overflow-x-auto px-1">
-      <table className="w-full min-w-[420px] text-sm">
+      <table className="w-full min-w-[300px] text-sm">
         <thead>
           <tr className="text-xs text-muted-foreground">
             <th className="pb-2 text-left font-medium">Rule from the brief</th>
             {card.chapters.map((g) => (
-              <th key={g.number} className="w-[72px] pb-2 text-center font-medium">
+              <th key={g.number} className="w-12 pb-2 text-center font-medium sm:w-[72px]">
                 Ch {g.number}
               </th>
             ))}
@@ -369,7 +369,7 @@ function CostByAgent({ usage, routing }: { usage: Usage; routing: RunReport["rou
       {rows.map(([name, b]) => {
         const r = routing?.[name]
         return (
-          <li key={name} className="grid grid-cols-[minmax(0,176px)_1fr_auto] items-center gap-3">
+          <li key={name} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[minmax(0,176px)_1fr_auto]">
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-sm font-medium">
                 <AgentDot name={name} /> {agent(name).label}
@@ -381,7 +381,8 @@ function CostByAgent({ usage, routing }: { usage: Usage; routing: RunReport["rou
                 </div>
               )}
             </div>
-            <div className="h-5 rounded-[4px] bg-muted/70">
+            {/* on phones the bar drops to its own row under the label */}
+            <div className="order-last col-span-2 h-5 rounded-[4px] bg-muted/70 sm:order-none sm:col-span-1">
               <div className="h-full rounded-[4px] bg-primary" style={{ width: `${(b.cost_usd / max) * 100}%` }} />
             </div>
             <div className="w-[92px] text-right">

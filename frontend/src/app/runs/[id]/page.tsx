@@ -119,11 +119,7 @@ export default function MissionControlPage() {
               </div>
             </Panel>
             <Panel title="Timeline" note="who worked on what, and when">
-              <div className="-mx-1 overflow-x-auto px-1">
-                <div className="min-w-[640px]">
-                  <RunTimeline timeline={timeline} live={unfolding} />
-                </div>
-              </div>
+              <RunTimeline timeline={timeline} live={unfolding} />
             </Panel>
           </div>
           {/* On wide screens the feed takes the height of the left column and scrolls inside it. */}

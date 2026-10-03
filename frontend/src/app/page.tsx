@@ -225,12 +225,12 @@ export default function RunsPage() {
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="pl-5">Run</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Profile</TableHead>
-                  <TableHead className="text-right">Chapters</TableHead>
-                  <TableHead>Scorecard</TableHead>
+                  <TableHead className="hidden md:table-cell">Profile</TableHead>
+                  <TableHead className="hidden text-right md:table-cell">Chapters</TableHead>
+                  <TableHead className="hidden md:table-cell">Scorecard</TableHead>
                   <TableHead className="text-right">Cost</TableHead>
-                  <TableHead className="text-right">Time</TableHead>
-                  <TableHead className="pr-5 text-right">Open</TableHead>
+                  <TableHead className="hidden text-right sm:table-cell">Time</TableHead>
+                  <TableHead className="hidden pr-5 text-right lg:table-cell">Open</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -260,18 +260,18 @@ export default function RunsPage() {
                         {r.error && <TooltipContent className="max-w-sm">{r.error}</TooltipContent>}
                       </Tooltip>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Badge variant="outline">{r.profile ?? "—"}</Badge>
                     </TableCell>
-                    <TableCell className="tabular text-right">{r.chapters ?? "—"}</TableCell>
-                    <TableCell>
+                    <TableCell className="tabular hidden text-right md:table-cell">{r.chapters ?? "—"}</TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <PassMark passed={r.scorecard_passed} />
                     </TableCell>
                     <TableCell>
                       <CostBar value={r.cost_usd ?? 0} max={maxCost} />
                     </TableCell>
-                    <TableCell className="tabular text-right text-muted-foreground">{duration(r.duration_s)}</TableCell>
-                    <TableCell className="pr-5 text-right" onClick={(e) => e.stopPropagation()}>
+                    <TableCell className="tabular hidden text-right text-muted-foreground sm:table-cell">{duration(r.duration_s)}</TableCell>
+                    <TableCell className="hidden pr-5 text-right lg:table-cell" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-1">
                         <Button asChild size="sm" variant="ghost">
                           <Link href={`/runs/${r.run_id}`}>{LIVE.has(r.status) ? "Live" : "Replay"}</Link>
