@@ -21,6 +21,7 @@ Check the chapter for:
 - Jargon: any technical term must be explained in plain words the first time it appears in this chapter, if it is listed as new here. Flag unexplained jargon. Terms explained in earlier chapters may be used freely: never ask for them to be explained again.
 - Readability and flow: short clear sentences, logical progression, smooth transitions, no repetition, a natural lead into the takeaway.
 - Format: prose paragraphs only (no lists or headings), one closing sentence that starts with "Takeaway:".
+- Citations are not your concern: the draft carries evidence markers like [E3] and has no reference list on purpose. After every review, code turns the markers into numbered citations and adds the chapter's reference list. Never ask for a reference list or for numbered citations, even if the style guide mentions them.
 
 Scoring: give 1-5 for each score, where 4 means ready for this reader with at most minor polish. A score of 3 or lower means a real problem, so name that problem as a `must_fix` issue. Approve (`approved: true`) when there are no `must_fix` issues and every score is at least 4; `should_fix` polish never blocks approval.
 

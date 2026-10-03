@@ -21,6 +21,6 @@ Outline requirements:
 Style guide requirements:
 - `reader_persona`: one concrete person, e.g. a woman opening her first general store in a small town.
 - `voice`: a warm mentor talking across the counter; encouraging, never condescending.
-- `do` / `dont`: 5-8 short rules each. Must include: plain English; short sentences; explain a technical term the first time it appears; flowing paragraphs with no bullet points or headings inside chapters; no hype words; no direct address to "dear reader".
+- `do` / `dont`: 5-8 short rules each. Must include: plain English; short sentences; explain a technical term the first time it appears; flowing paragraphs with no bullet points or headings inside chapters; no hype words; no direct address to "dear reader". Leave out citation format and reference lists: code numbers the citations and builds the reference lists after writing.
 - `glossary`: every technical term the book will need (UPI, QR code, MDR, VPA/UPI ID, NPCI, PIN, settlement, etc.) with a one-sentence plain explanation and the chapter where it is first introduced. A term is explained only once, in that chapter.
 - `sample_paragraph`: about 80 words in the target voice. It must contain no facts, figures, dates or named statistics.
