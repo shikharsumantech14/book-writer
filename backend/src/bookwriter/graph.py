@@ -289,8 +289,9 @@ def assembler(s: BookState, runtime: Runtime[Deps]) -> dict:
 
     md = book_markdown(outline.book_title, finals)
     deps.run_dir.mkdir(parents=True, exist_ok=True)
-    (deps.run_dir / "book.md").write_text(md, encoding="utf-8")
-    (deps.run_dir / "book.html").write_text(book_html(outline.book_title, finals), encoding="utf-8")
+    (deps.run_dir / "book.md").write_text(md, encoding="utf-8", newline="\n")
+    html = book_html(outline.book_title, finals)
+    (deps.run_dir / "book.html").write_text(html, encoding="utf-8", newline="\n")
     emit(
         "book_ready",
         f"Book assembled: {len(finals)} chapter(s), {sum(c.word_count for c in finals)} words",

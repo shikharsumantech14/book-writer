@@ -144,7 +144,8 @@ async def run_book(
         "final_chapters": [c.model_dump() for c in finals],
         "outline": final.get("outline"),
     }
-    (run_dir / "run_report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    report_json = json.dumps(report, indent=2, ensure_ascii=False)
+    (run_dir / "run_report.json").write_text(report_json, encoding="utf-8", newline="\n")
     total = report["usage"]["total"]["cost_usd"]
     log.record(
         make_event(

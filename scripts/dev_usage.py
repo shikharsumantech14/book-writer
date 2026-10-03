@@ -154,7 +154,7 @@ def main() -> None:
 
     out = ROOT / "docs" / "DEV_COST.md"
     out.parent.mkdir(exist_ok=True)
-    out.write_text("\n".join(md), encoding="utf-8")
+    out.write_text("\n".join(md), encoding="utf-8", newline="\n")
     print("\n".join(md))
 
 
