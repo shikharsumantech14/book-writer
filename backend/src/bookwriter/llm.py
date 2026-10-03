@@ -89,8 +89,11 @@ class LLM:
         self.max_cost_usd = max_cost_usd
         self.spent_usd = 0.0
         settings = get_settings()
+        headers = (
+            {"anthropic-workspace-id": settings.anthropic_workspace_id} if settings.anthropic_workspace_id else None
+        )
         self.client = client or anthropic.AsyncAnthropic(
-            api_key=settings.anthropic_api_key, max_retries=4, timeout=600.0
+            api_key=settings.anthropic_api_key, max_retries=4, timeout=600.0, default_headers=headers
         )
 
     # ------------------------------------------------------------------ helpers

@@ -34,6 +34,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=BACKEND_ROOT / ".env", extra="ignore")
 
     anthropic_api_key: str | None = None
+    # Needed only when the API key is not scoped to a workspace (the API then asks for one).
+    anthropic_workspace_id: str | None = None
     tavily_api_key: str | None = None
     data_dir: Path = BACKEND_ROOT / "data"
     config_path: Path = BACKEND_ROOT / "config.yaml"
