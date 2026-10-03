@@ -9,14 +9,17 @@ light and dark mode. Components use the tokens (through Tailwind classes such as
 
 ## Principles
 
-1. **Identity is consistent.** Each agent has one colour and one icon, used the same way in the agent
-   graph, the activity feed, chapter lanes, badges and charts.
+1. **Identity is consistent.** Each agent has one colour and one icon, used the same way on the assembly
+   line, the timeline, the activity feed, chapter lanes, badges, charts and the How it works pictures.
 2. **Colour never works alone.** Every agent colour sits next to the agent's name; every status colour
    comes with an icon and a label. Text is always in ink tokens, never in a data colour.
 3. **Numbers are honest.** Costs come from the run's recorded events, priced from `config.yaml`. Charts
    start at zero, use one axis, and label values directly.
-4. **Two typefaces, two jobs.** Inter for the interface; Source Serif 4 for the book, because the
-   reader screen should feel like reading, not like a dashboard.
+4. **Two typefaces, two jobs.** Inter for the interface; Source Serif 4 for the book and for display
+   titles, because the product makes books.
+5. **Each page has the character of its job.** The tokens and identity are shared, but the Run page is a
+   mission-control console, the Book page a printed page, the Report a data dashboard, and Runs and How it
+   works a clean product style. See *Page characters* below.
 
 ## Colour
 
@@ -63,23 +66,33 @@ Fixed in both themes and never reused as a series colour: `--status-good` `#0ca3
 `--status-warning` `#fab219`, `--status-serious` `#ec835a`, `--status-critical` `#d03b3b`. Shown only as
 an icon colour next to a label (`StatusBadge`, `PassMark`).
 
+## Page characters
+
+| Page | Character | How |
+|---|---|---|
+| Run | Mission control: dark, glowing stations, live numbers | `.console` re-scopes the tokens to a fixed dark palette (near-black plane, cool ink, a faint 28px grid, teal accent `--console-accent`, red `--console-live`) whatever the app theme; `.console-panel` surfaces; `.hud-label` mono caps for labels |
+| Book | A printed page | `.paper` re-scopes the tokens to warm paper and ink (`--paper`, `--paper-ink`, `--paper-muted`, `--paper-rule`, `--paper-accent`, `--paper-mark`), a night sepia in dark mode; serif body with indented paragraphs, `.drop-cap`, `.small-caps` |
+| Report | A data dashboard | Cards on the page plane: KPI tiles, matrices, heatmaps and charts, following *Charts* below |
+| Runs, How it works | Clean product | The base tokens, serif display titles, soft radial tints behind hero cards |
+
 ## Typography
 
 | Role | Face | Size and weight |
 |---|---|---|
 | Interface | Inter (`--font-sans`) | 14px body; 24px semibold page titles; 11-12px meta |
-| Book | Source Serif 4 (`--font-serif`) | 18px / 1.8 line height body; 30px chapter titles |
+| Book and display | Source Serif 4 (`--font-serif`) | 18px / 1.8 line height body; 32-38px chapter titles; display titles on Runs and How it works |
 | Code and ids | Geist Mono (`--font-mono`) | 11-12px run ids and timestamps |
 
 Numbers in tables and counters use tabular figures (`.tabular`); headline numbers use proportional ones.
 
 ## Shape, depth and motion
 
-- Radius: `--radius` 10px; cards use `rounded-xl`, chips `rounded-full`.
-- Depth: hairline borders and `shadow-xs`; nothing floats except popovers and dialogs.
-- Motion: agents working pulse in their own colour (`animate-node-pulse`); a send-back animates the
-  loop edge in the reviewer's colour for about 2.5 s; feed rows fade in. All motion is switched off
-  under `prefers-reduced-motion`.
+- Radius: `--radius` 10px; cards use `rounded-2xl`, chips `rounded-full`.
+- Depth: hairline borders and `shadow-xs`; nothing floats except popovers and dialogs. The console and the
+  paper page add one soft, large shadow.
+- Motion explains: the station at work pings and spins in its agent's colour (`animate-station-ping`,
+  `animate-spin-slow`); a fresh send-back draws its loop dashed and moving (`animate-dash-flow`) for about
+  2.5 s; the live badge blinks; feed rows fade in. All motion is switched off under `prefers-reduced-motion`.
 
 ## Components
 
@@ -89,13 +102,17 @@ shadcn/ui (Radix primitives, Nova preset) themed from the tokens above, plus a f
 |---|---|
 | `AgentIcon`, `AgentChip`, `AgentDot` | Every place an agent appears |
 | `StatusBadge`, `PassMark` | Run and chapter status, scorecard checks |
-| `StatTile` | Headline numbers: cost, calls, cache share |
-| `AgentGraph` (React Flow) | The graph from `GET /graph`, laid out by hand |
-| `Citation` (hover card) | `[n]` markers in the book: source, verified quote, link and fact-check status |
+| `AssemblyLine` | Run page: one lane per chapter, stations and loops taken from `GET /graph`, send-backs counted |
+| `RunTimeline` | Run page: a Gantt of who worked when, built from the event log (`lib/timeline.ts`) |
+| `Hud`, `ActivityFeed`, `ChapterLanes` | Run page: live numbers, the filterable feed, per-chapter counters |
+| `Citation`, `SourceNote` | Book page: `[n]` markers; the source opens in the margin (under the paragraph on phones), never over the text |
+| `ReportDashboard` | Report page: verdict, KPI tiles, scorecard matrix, score heatmap, stacked bars, cost and spend charts |
+| `HowABookIsMade`, `SystemDiagram` | `/explain`: fixed-size pictures, also captured as the README's PNGs |
 
 ## Charts
 
-Recharts, following the dataviz method: bars at most 24px thick with 4px rounded ends at the data end,
-a single hue for magnitude, values at the bar tips, hairline gridlines, a hover tooltip on every mark, and
-a table view under every chart. Agent identity in a chart is a coloured dot beside the agent's name on
-the axis.
+Following the dataviz method: bars at most 24px thick with 4px rounded ends, a single hue for magnitude,
+values at the bar tips, hairline gridlines, a tooltip on every mark, and the raw numbers in the Details tab.
+Agent identity in a magnitude chart is a coloured dot beside the agent's name, not the bar colour; where the
+series are agents (effort by chapter, the timeline), the bars wear the agent colours with a legend. Status
+colours appear only for status (fact-check verdicts), and the editor-score heatmap uses one sequential hue.
