@@ -334,8 +334,21 @@
     --paper-rule: #e6dccb;
     --paper-accent: #0f6b62;
     --paper-mark: #f3e7c9;
+    /* shared components on the page pick up the paper and ink */
+    --card: var(--paper);
+    --foreground: var(--paper-ink);
+    --muted-foreground: var(--paper-muted);
+    --border: var(--paper-rule);
+    --primary: var(--paper-accent);
     background: var(--paper);
     color: var(--paper-ink);
+  }
+  /* a printed page: paragraphs run on with an indent instead of a gap */
+  .paper .prose-book p {
+    margin: 0;
+  }
+  .paper .prose-book p:not(.drop-cap) {
+    text-indent: 1.5em;
   }
   .dark .paper {
     --paper: #1a1814;
@@ -348,10 +361,10 @@
   .drop-cap::first-letter {
     float: left;
     font-family: var(--font-serif);
-    font-size: 4.1em;
-    line-height: 0.82;
+    font-size: 3.55em;
+    line-height: 0.8;
     font-weight: 600;
-    padding: 0.08em 0.12em 0 0;
+    padding: 0.1em 0.1em 0 0;
     color: var(--paper-accent);
   }
   .small-caps {
