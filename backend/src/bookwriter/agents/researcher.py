@@ -174,9 +174,10 @@ async def research_chapter(
         chapter=ch,
     )
     new = len(evidence) - len(existing or [])
+    summary = " ".join(result.final_text.split())[:200]  # the model's closing note, on one line
     emit(
         "agent_done",
-        f"{new} evidence items from {len({e.url for e in evidence})} sources. {result.final_text[:200]}",
+        f"{new} evidence items from {len({e.url for e in evidence})} sources. {summary}",
         agent="researcher",
         chapter=ch,
         tool_calls=result.tool_calls,

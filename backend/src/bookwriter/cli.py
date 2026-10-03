@@ -15,7 +15,7 @@ from rich.table import Table
 from .config import get_settings, load_config
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help="Multi-agent book writer.")
-console = Console()
+console = Console(record=True)  # record=True: `--svg` can save what was printed
 
 AGENT_STYLE = {
     "planner": "magenta",
@@ -37,14 +37,21 @@ def _print_event(e: dict) -> None:
     where = f"ch{e['chapter']}" if e.get("chapter") else "book"
     agent = e.get("agent") or "run"
     style = AGENT_STYLE.get(agent, "bold")
+    # Model and tool calls are detail: one dim line each, cut to the terminal width.
     if kind == "llm_call":
         tokens = d["input_tokens"] + d["cache_read_tokens"] + d["cache_write_tokens"]
         line = f"{d['model']} {d.get('effort') or ''}  {tokens:,} in / {d['output_tokens']:,} out  ${d['cost_usd']:.4f}"
-        console.print(f"[dim]{when} {where:<5} {agent:<13} {line}[/dim]", highlight=False)
-    elif kind == "tool_call":
-        console.print(f"[dim]{when} {where:<5} {agent:<13} {e['message']}[/dim]", highlight=False)
+        console.print(f"[dim]{when} {where:<5} {agent:<13} {line}[/dim]", highlight=False, no_wrap=True)
+    elif kind in ("tool_call", "source_read"):
+        console.print(
+            f"[dim]{when} {where:<5} {agent:<13} {e['message']}[/dim]",
+            highlight=False,
+            no_wrap=True,
+            overflow="ellipsis",
+        )
     else:
-        console.print(f"{when} {where:<5} [{style}]{agent:<13}[/{style}] {e['message']}", highlight=False)
+        message = " ".join(e["message"].split())  # model text can carry newlines; the log is one line per event
+        console.print(f"{when} {where:<5} [{style}]{agent:<13}[/{style}] {message}", highlight=False)
 
 
 def _print_usage(usage: dict) -> None:
@@ -80,10 +87,14 @@ def _print_scorecard(card: dict | None) -> None:
     for ch in card["chapters"]:
         m = ch["metrics"]
         failed = [c for c in ch["checks"] if not c["passed"]]
+        r = m["rounds"] or {}
+        approved = "[green]approved[/green]" if m["editor_approved"] else "[yellow]not approved[/yellow]"
+        console.print(f"  Chapter {ch['number']}: {ch['title']}", highlight=False)
         console.print(
-            f"  Chapter {ch['number']} '{ch['title']}': {m['word_count']} words, {m['references']} refs "
-            f"({m['official_sources']} official), {m['claims_supported']}/{m['claims_checked']} claims supported, "
-            f"editor approved: {m['editor_approved']}, rounds: {m['rounds']}"
+            f"    {m['word_count']} words · {m['references']} references ({m['official_sources']} official) · "
+            f"{m['claims_supported']}/{m['claims_checked']} claims supported · editor {approved} · "
+            f"{r.get('writer_passes', 0)} writer passes, {r.get('editor_rounds', 0)} editor reviews, "
+            f"{r.get('fact_check_rounds', 0)} fact-checks"
         )
         for c in failed:
             console.print(f"    [red]x {c['rule']}[/red]: {c['detail']}")
@@ -132,6 +143,7 @@ def run(
 @app.command()
 def report(
     run: str = typer.Argument(..., help="A run id (folder under data/runs) or a path to a run_report.json."),
+    svg: Path = typer.Option(None, help="Also save the output as a terminal-style SVG image."),
 ) -> None:
     """Print the cost breakdown and scorecard of a finished run."""
     path = Path(run) if run.endswith(".json") else get_settings().data_dir / "runs" / run / "run_report.json"
@@ -139,6 +151,8 @@ def report(
     console.print(f"Run {data['run_id']}: {data['status']} on '{data['profile']}', {data['duration_s']:.0f}s")
     _print_usage(data["usage"])
     _print_scorecard(data["scorecard"])
+    if svg:
+        console.save_svg(str(svg), title=f"bookwriter report {data['run_id']}")
 
 
 @app.command()
@@ -159,6 +173,9 @@ def graph(
 def replay(
     run: str = typer.Argument(..., help="A run id, a run folder, or a path to an events.jsonl."),
     speed: float = typer.Option(20.0, min=0.1, help="Replay this many times faster than the original run."),
+    limit: int = typer.Option(None, min=1, help="Stop after this many events."),
+    quiet: bool = typer.Option(False, "--quiet", help="Show agent steps only, not each model and tool call."),
+    svg: Path = typer.Option(None, help="Also save the output as a terminal-style SVG image."),
 ) -> None:
     """Replay a recorded run in the terminal, with its original pacing (no API calls, no cost)."""
     from . import store
@@ -172,12 +189,16 @@ def replay(
         if run_dir is None:
             raise typer.BadParameter(f"No run {run}.")
         events = store.events(run_dir)
+    if quiet:
+        events = [e for e in events if e["kind"] not in ("llm_call", "tool_call", "source_read", "evidence_added")]
     previous = None
-    for e in events:
+    for e in events[:limit]:
         if previous is not None:
             time.sleep(min((e["ts"] - previous) / speed, 2.0))
         previous = e["ts"]
         _print_event(e)
+    if svg:
+        console.save_svg(str(svg), title="bookwriter run (replayed)")
 
 
 @app.command()
