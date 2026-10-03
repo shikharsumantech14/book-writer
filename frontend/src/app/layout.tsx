@@ -24,7 +24,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${inter.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      {/* Browser extensions such as Grammarly add attributes to <body> before React loads. */}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TooltipProvider delayDuration={150}>
             <AppHeader />
