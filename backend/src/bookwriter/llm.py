@@ -1,11 +1,14 @@
 """The one place that talks to Claude.
 
 * Role-based model routing: each agent asks for a *role*; config.yaml maps the
-  role to a model tier (strong / balanced / fast) and an effort level.
+  role to a model tier (strong / balanced / fast) and an effort level, per
+  routing profile.
 * Structured outputs: `structured()` returns a validated Pydantic object.
 * Tool use: `agent_loop()` runs a bounded tool-calling loop over `ToolSpec`s,
   which can wrap MCP tools or local Python functions alike.
-* Accounting: every call emits an `llm_call` event with tokens and cost.
+* Accounting: every call emits an `llm_call` event with tokens and cost, priced
+  from config.yaml through `pricing.py`; an optional per-run cap stops the run
+  before it spends more than `run.max_cost_usd`.
 """
 
 from __future__ import annotations
@@ -20,17 +23,11 @@ from typing import Any, TypeVar
 import anthropic
 from pydantic import BaseModel
 
+from . import pricing
 from .config import AppConfig, Role, get_settings
 from .events import emit
 
 T = TypeVar("T", bound=BaseModel)
-
-# USD per 1M tokens (input, output). Cache reads/writes are approximated as input.
-PRICING: dict[str, tuple[float, float]] = {
-    "claude-opus-5-5": (4.0, 20.0),
-    "claude-sonnet-5-5": (2.0, 10.0),
-    "claude-haiku-4-5": (1.0, 5.0),
-}
 
 # Models that support the server-side refusal fallback ("default" routing).
 FALLBACK_MODELS = {"claude-opus-5-5", "claude-sonnet-5-5", "claude-opus-5", "claude-fable-5-1"}
@@ -41,6 +38,10 @@ NO_EFFORT_MODELS = {"claude-haiku-4-5"}
 
 class LLMError(RuntimeError):
     pass
+
+
+class BudgetExceeded(LLMError):
+    """The run reached `run.max_cost_usd`; no further model calls are made."""
 
 
 @dataclass
@@ -64,19 +65,29 @@ class LoopResult:
     stopped_by_budget: bool
 
 
-def _cost(model: str, usage: Any) -> float:
-    pin, pout = PRICING.get(model, (0.0, 0.0))
-    inp = (
-        (usage.input_tokens or 0)
-        + (getattr(usage, "cache_read_input_tokens", 0) or 0) * 0.1
-        + (getattr(usage, "cache_creation_input_tokens", 0) or 0) * 1.25
-    )
-    return (inp * pin + (usage.output_tokens or 0) * pout) / 1_000_000
+def _tokens(usage: Any) -> dict[str, int]:
+    return {
+        "input_tokens": usage.input_tokens or 0,
+        "output_tokens": usage.output_tokens or 0,
+        "cache_read_tokens": getattr(usage, "cache_read_input_tokens", 0) or 0,
+        "cache_write_tokens": getattr(usage, "cache_creation_input_tokens", 0) or 0,
+    }
 
 
 class LLM:
-    def __init__(self, cfg: AppConfig, client: anthropic.AsyncAnthropic | None = None):
+    def __init__(
+        self,
+        cfg: AppConfig,
+        client: anthropic.AsyncAnthropic | None = None,
+        *,
+        max_cost_usd: float | None = None,
+    ):
         self.cfg = cfg
+        # Fail at start-up, not mid-run, if any routed model has no price.
+        for role in cfg.roles:
+            pricing.price_for(cfg.model_for(role)[0], cfg.models)
+        self.max_cost_usd = max_cost_usd
+        self.spent_usd = 0.0
         settings = get_settings()
         self.client = client or anthropic.AsyncAnthropic(
             api_key=settings.anthropic_api_key, max_retries=4, timeout=600.0
@@ -84,8 +95,8 @@ class LLM:
 
     # ------------------------------------------------------------------ helpers
 
-    def _params(self, role: Role) -> dict[str, Any]:
-        model, effort = self.cfg.model_for(role)
+    def _params(self, role: Role, revision: bool = False) -> dict[str, Any]:
+        model, effort = self.cfg.model_for(role, revision=revision)
         params: dict[str, Any] = {"model": model}
         if effort and model not in NO_EFFORT_MODELS:
             params["output_config"] = {"effort": effort}
@@ -94,18 +105,27 @@ class LLM:
             params["fallbacks"] = "default"
         return params
 
-    def _account(self, role: Role, model: str, response: Any, started: float, chapter: int | None) -> None:
-        u = response.usage
+    def _guard(self) -> None:
+        if self.max_cost_usd is not None and self.spent_usd >= self.max_cost_usd:
+            raise BudgetExceeded(f"Run cost cap reached: ${self.spent_usd:.2f} of ${self.max_cost_usd:.2f}.")
+
+    def _account(self, role: Role, params: dict[str, Any], response: Any, started: float, chapter: int | None) -> None:
+        requested = params["model"]
+        served = response.model or requested
+        # A server-side fallback can answer from another model; bill that one when we know its price.
+        priced_as = served if pricing.canonical(served) in self.cfg.models else requested
+        tokens = _tokens(response.usage)
+        cost = pricing.cost_usd(priced_as, self.cfg.models, **tokens)
+        self.spent_usd += cost
         emit(
             "llm_call",
-            f"{role} → {model}",
+            f"{role} → {pricing.canonical(served)}",
             agent=role,
             chapter=chapter,
-            model=response.model or model,
-            input_tokens=u.input_tokens,
-            output_tokens=u.output_tokens,
-            cache_read_tokens=getattr(u, "cache_read_input_tokens", 0) or 0,
-            cost_usd=round(_cost(model, u), 5),
+            model=pricing.canonical(served),
+            effort=params.get("output_config", {}).get("effort"),
+            **tokens,
+            cost_usd=round(cost, 6),
             latency_s=round(time.time() - started, 2),
             stop_reason=response.stop_reason,
         )
@@ -130,11 +150,14 @@ class LLM:
         max_tokens: int = 16000,
         chapter: int | None = None,
         attempts: int = 2,
+        revision: bool = False,
     ) -> T:
-        """One call, one validated Pydantic object back."""
-        params = self._params(role)
+        """One call, one validated Pydantic object back. `revision` selects the
+        role's revision effort (a reviewer sent the work back)."""
+        params = self._params(role, revision)
         last_err: Exception | None = None
         for _ in range(attempts):
+            self._guard()
             started = time.time()
             try:
                 response = await self.client.beta.messages.parse(
@@ -146,7 +169,7 @@ class LLM:
                 )
             except anthropic.BadRequestError:
                 raise  # our bug, retrying won't help
-            self._account(role, params["model"], response, started, chapter)
+            self._account(role, params, response, started, chapter)
             try:
                 self._check_stop(response)
                 if response.parsed_output is None:
@@ -181,6 +204,7 @@ class LLM:
         budget_hit = False
 
         while True:
+            self._guard()
             turns += 1
             started = time.time()
             response = await self.client.beta.messages.create(
@@ -189,11 +213,11 @@ class LLM:
                 tools=[t.to_param() for t in tools],
                 messages=messages,
                 # Auto-cache the growing prefix: each turn re-sends the history,
-                # so this turns most loop input into 0.1x-priced cache reads.
+                # so most loop input is billed as cheap cache reads.
                 cache_control={"type": "ephemeral"},
                 **params,
             )
-            self._account(role, params["model"], response, started, chapter)
+            self._account(role, params, response, started, chapter)
             if response.stop_reason == "refusal":
                 self._check_stop(response)
 
