@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils"
 
 function Counter({ label, value, of }: { label: string; value: number; of?: number }) {
   return (
-    <div className="rounded-lg bg-muted/60 px-2.5 py-1.5">
-      <div className="text-[11px] text-muted-foreground">{label}</div>
-      <div className="tabular text-sm font-semibold">
+    <div className="rounded-lg border border-[var(--console-line)] bg-background/40 px-2.5 py-1.5">
+      <div className="font-mono text-[10px] tracking-wide text-muted-foreground uppercase">{label}</div>
+      <div className="font-mono text-base font-semibold tabular-nums">
         {value}
         {of != null && <span className="font-normal text-muted-foreground"> / {of}</span>}
       </div>
@@ -51,10 +51,10 @@ export function ChapterLanes({ view, maxPasses }: { view: RunView; maxPasses: nu
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       {lanes.map((lane) => (
-        <div key={lane.number} className="flex flex-col gap-3 rounded-xl border bg-card p-4 shadow-xs">
+        <div key={lane.number} className="console-panel flex flex-col gap-3 p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <div className="text-xs font-medium text-muted-foreground">Chapter {lane.number}</div>
+              <div className="hud-label">Chapter {lane.number}</div>
               <div className="line-clamp-2 leading-snug font-semibold">{lane.title ?? "Waiting for the outline…"}</div>
             </div>
             {lane.done ? (
@@ -85,7 +85,11 @@ export function ChapterLanes({ view, maxPasses }: { view: RunView; maxPasses: nu
             {lane.removed > 0 && <span>{lane.removed} sentence(s) removed by the safety net</span>}
             <span className="ml-auto tabular">{usd(lane.cost, 3)}</span>
           </div>
-          {lane.last && <p className="line-clamp-2 border-t pt-2 text-xs text-muted-foreground">{lane.last}</p>}
+          {lane.last && (
+            <p className="line-clamp-2 border-t border-[var(--console-line)] pt-2 text-xs text-muted-foreground">
+              {lane.last.replace(/\s+/g, " ")}
+            </p>
+          )}
         </div>
       ))}
     </div>

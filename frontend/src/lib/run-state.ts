@@ -43,6 +43,7 @@ export interface RunView {
   startedTs: number | null
   lastTs: number | null
   maxCost: number | null
+  humanReview: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   routing: Record<string, any> | null
   bookNode: string | null // active book-level node
@@ -97,6 +98,7 @@ export function emptyView(): RunView {
     startedTs: null,
     lastTs: null,
     maxCost: null,
+    humanReview: false,
     routing: null,
     bookNode: null,
     outline: null,
@@ -132,6 +134,7 @@ function apply(view: RunView, e: TimedEvent): void {
       view.chapterCount = d.chapters ?? 0
       view.startedTs = e.ts
       view.maxCost = d.max_cost_usd ?? null
+      view.humanReview = Boolean(d.human_review)
       view.routing = d.routing ?? null
       for (let n = 1; n <= view.chapterCount; n++) lane(view, n)
       return

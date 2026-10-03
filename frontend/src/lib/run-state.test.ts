@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest"
 
 import type { RunReport } from "./api"
 import { activeNodes, reduceRun, type TimedEvent } from "./run-state"
+import { buildTimeline } from "./timeline"
 
 const SAMPLE = path.resolve(process.cwd(), "../docs/sample-output")
 const events: TimedEvent[] = readFileSync(path.join(SAMPLE, "events.jsonl"), "utf8")
@@ -65,5 +66,34 @@ describe("reduceRun part-way through", () => {
     const sentBack = events.filter((e) => e.kind === "review" && e.chapter && !e.data.approved)
     expect(view.sendBacks.filter((s) => s.to === "chapter:writer")).toHaveLength(sentBack.length)
     expect(new Set(view.sendBacks.map((s) => s.from))).toContain("chapter:editor")
+  })
+})
+
+describe("buildTimeline on the committed sample run", () => {
+  const timeline = buildTimeline(events)
+
+  it("has a row for the book and one per chapter", () => {
+    expect(timeline.rows).toEqual(["book", "1", "2", "3"])
+  })
+
+  it("gives each chapter one Writer turn per writer pass", () => {
+    for (const [n, chapter] of Object.entries(report.chapters)) {
+      const turns = timeline.segments.filter((s) => s.row === n && s.agent === "writer")
+      expect(turns).toHaveLength(chapter.rounds.writer_passes)
+    }
+  })
+
+  it("marks every reviewer verdict, and ends where the run ends", () => {
+    const verdicts = events.filter((e) => e.kind === "review" && e.chapter)
+    expect(timeline.markers.filter((m) => m.kind !== "done")).toHaveLength(verdicts.length)
+    expect(timeline.duration).toBeCloseTo(report.duration_s, 0)
+    expect(timeline.spend.at(-1)!.cost).toBeCloseTo(report.usage.total.cost_usd, 3)
+  })
+
+  it("never overlaps two turns in one row", () => {
+    for (const row of timeline.rows) {
+      const segs = timeline.segments.filter((s) => s.row === row).sort((a, b) => a.start - b.start)
+      for (let i = 1; i < segs.length; i++) expect(segs[i].start).toBeGreaterThanOrEqual(segs[i - 1].end - 1e-6)
+    }
   })
 })
