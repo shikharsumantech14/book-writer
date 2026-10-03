@@ -1,9 +1,10 @@
-"""Command line: `bookwriter run`, `bookwriter report`, `bookwriter graph`, `bookwriter mcp`."""
+"""Command line: `bookwriter run | report | replay | serve | graph | mcp`."""
 
 from __future__ import annotations
 
 import asyncio
 import json
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -107,6 +108,15 @@ def run(
         console.print(f"[red]Missing in backend/.env: {', '.join(k.upper() for k in missing)}[/red]")
         raise typer.Exit(2)
 
+    from . import store
+    from .estimate import estimate
+
+    reports = [r for d in store.run_dirs().values() if (r := store.read_report(d))]
+    est = estimate(cfg.profile, chapters or cfg.brief.chapters, reports)
+    console.print(
+        f"Estimated cost: [bold]${est['estimate_usd']:.2f}[/bold] "
+        f"(${est['low_usd']:.2f}-${est['high_usd']:.2f}, {est['basis']})"
+    )
     result = asyncio.run(
         run_book(cfg, chapters=chapters, max_cost_usd=max_cost, parallel_chapters=parallel, on_event=_print_event)
     )
@@ -143,6 +153,42 @@ def graph(
         return
     readme.write_text(sync_diagram(readme.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
     console.print(f"Updated the agent graph in {readme}")
+
+
+@app.command()
+def replay(
+    run: str = typer.Argument(..., help="A run id, a run folder, or a path to an events.jsonl."),
+    speed: float = typer.Option(20.0, min=0.1, help="Replay this many times faster than the original run."),
+) -> None:
+    """Replay a recorded run in the terminal, with its original pacing (no API calls, no cost)."""
+    from . import store
+    from .events import read_events
+
+    path = Path(run)
+    if path.suffix == ".jsonl":
+        events = read_events(path)
+    else:
+        run_dir = path if path.is_dir() else store.find_run(run)
+        if run_dir is None:
+            raise typer.BadParameter(f"No run {run}.")
+        events = store.events(run_dir)
+    previous = None
+    for e in events:
+        if previous is not None:
+            time.sleep(min((e["ts"] - previous) / speed, 2.0))
+        previous = e["ts"]
+        _print_event(e)
+
+
+@app.command()
+def serve(
+    host: str = typer.Option("127.0.0.1", help="Interface to listen on."),
+    port: int = typer.Option(8000, help="Port to listen on."),
+) -> None:
+    """Run the HTTP API for the dashboard (docs at http://localhost:8000/docs)."""
+    import uvicorn
+
+    uvicorn.run("bookwriter.api.app:app", host=host, port=port)
 
 
 @app.command()
