@@ -1,0 +1,84 @@
+# Book brief + system configuration.
+# Everything an agent needs to know about the job lives here, not in code.
+
+brief:
+  title: "Pay Me on UPI: How Digital Payments Changed Small Business in India"
+  audience: "First-time small-business owners in India"
+  chapters: 3
+  words_min: 600
+  words_max: 900
+  tone: >-
+    Friendly, clear and encouraging, as if a mentor is explaining things to a new
+    shop owner. Plain English with no jargon; explain any technical term the first
+    time it appears. The same tone and voice across all three chapters.
+  citation_rules: >-
+    Every fact, figure and date must have a numbered citation in the text, e.g. [1].
+    Each chapter ends with a reference list giving the source name, title and a
+    working link. Sources must be real and publicly accessible. Prefer official
+    sources (NPCI, RBI, government websites) and reputable news outlets.
+
+# Model tiers. Roles below pick a tier; swap model IDs here without touching code.
+models:
+  strong: claude-opus-5-5      # hard judgement: planning, writing, fact verdicts
+  balanced: claude-sonnet-5-5  # tool-heavy agent loops, editing
+  fast: claude-haiku-4-5       # narrow classification / extraction
+
+roles:
+  planner:      { tier: strong,   effort: high }
+  researcher:   { tier: balanced, effort: medium }
+  writer:       { tier: strong,   effort: high }
+  editor:       { tier: balanced, effort: high }
+  claim_tagger: { tier: fast }
+  fact_checker: { tier: strong,   effort: high }
+  chief_editor: { tier: strong,   effort: high }
+
+# Revision budgets: how many times each reviewer may send a chapter back.
+limits:
+  lint_rounds: 3
+  editor_rounds: 2
+  fact_check_rounds: 2
+  max_writer_passes: 7
+  research_tool_calls: 40       # per chapter, initial research
+  gap_research_tool_calls: 15   # per fact-check driven gap fill
+  max_evidence_per_chapter: 14
+
+# Source preferences given to the Researcher and the search tool.
+sources:
+  official_domains:
+    - npci.org.in
+    - rbi.org.in
+    - pib.gov.in
+    - meity.gov.in
+    - finmin.nic.in
+    - financialservices.gov.in
+    - digitalindia.gov.in
+    - india.gov.in
+    - msme.gov.in
+    - udyamregistration.gov.in
+    - gst.gov.in
+    - mygov.in
+  reputable_news_domains:
+    - thehindu.com
+    - indianexpress.com
+    - livemint.com
+    - economictimes.indiatimes.com
+    - business-standard.com
+    - hindustantimes.com
+    - reuters.com
+    - bbc.com
+    - moneycontrol.com
+    - thehindubusinessline.com
+    - financialexpress.com
+  blocked_domains:
+    - wikipedia.org
+    - quora.com
+    - reddit.com
+    - medium.com
+    - youtube.com
+    - facebook.com
+    - instagram.com
+    - x.com
+    - twitter.com
+    - linkedin.com
+
+human_in_the_loop: false

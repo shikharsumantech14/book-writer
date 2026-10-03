@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data: runs, page cache, SQLite
+backend/data/*
+!backend/data/.gitkeep
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+
+# Assignment source document (the company's, not ours to publish)
+docs/assignment/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
