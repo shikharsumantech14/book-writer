@@ -114,10 +114,33 @@ async def test_single_chapter_dev_profile(monkeypatch):
 
 
 async def test_cost_cap_stops_the_run(cfg, monkeypatch):
-    result, _ = await _run(cfg, monkeypatch, chapters=1, max_cost_usd=0.01)
+    # Let the runner open the MCP session itself (in-process instead of stdio), as in production:
+    # errors raised inside it arrive wrapped in an ExceptionGroup and must still be classified.
+    from bookwriter import runner
+
+    install_fake_web(monkeypatch)
+    monkeypatch.setattr(runner, "connect_research", lambda transport: connect_research("inprocess"))
+    result = await run_book(cfg, client=FakeAnthropic(), chapters=1, max_cost_usd=0.01)
     assert result.status == "stopped_budget"
     assert "cost cap" in result.report["error"]
     assert (result.run_dir / "run_report.json").exists()
+
+
+async def test_failure_reports_the_root_cause(cfg, monkeypatch):
+    from bookwriter import runner
+
+    class Broken(FakeAnthropic):
+        async def _parse(self, **kw):
+            raise RuntimeError("planner exploded")
+
+    install_fake_web(monkeypatch)
+    monkeypatch.setattr(runner, "connect_research", lambda transport: connect_research("inprocess"))
+    client = Broken()
+    client.beta.messages.parse = client._parse
+    result = await run_book(cfg, client=client, chapters=1)
+    assert result.status == "failed"
+    assert result.report["error"] == "RuntimeError: planner exploded"
+    assert "planner exploded" in result.report["traceback"]
 
 
 async def test_rejects_bad_chapter_count(cfg):

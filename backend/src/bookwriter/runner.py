@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import secrets
 import time
+import traceback
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -38,6 +39,14 @@ class RunResult:
 
 def new_run_id() -> str:
     return f"{datetime.now():%Y%m%d-%H%M%S}-{secrets.token_hex(2)}"
+
+
+def root_cause(e: BaseException) -> BaseException:
+    """The MCP client runs inside an anyio task group, which wraps anything raised in its
+    body in an ExceptionGroup. Unwrap single-exception groups to the error that happened."""
+    while isinstance(e, BaseExceptionGroup) and len(e.exceptions) == 1:
+        e = e.exceptions[0]
+    return e
 
 
 @asynccontextmanager
@@ -90,7 +99,7 @@ async def run_book(
         )
     )
 
-    status, error, final = "completed", None, {}
+    status, error, trace, final = "completed", None, None, {}
     try:
         async with _research(research) as rs:
             deps = Deps(cfg=cfg, llm=llm, research=rs, run_dir=run_dir)
@@ -106,16 +115,20 @@ async def run_book(
                     log.record(chunk)
                 elif not namespace:  # the book graph's own state, not a chapter subgraph's
                     final = chunk
-    except BudgetExceeded as e:
-        status, error = "stopped_budget", str(e)
     except Exception as e:  # recorded in the report; the CLI exits non-zero
-        status, error = "failed", f"{type(e).__name__}: {e}"
+        cause = root_cause(e)
+        if isinstance(cause, BudgetExceeded):
+            status, error = "stopped_budget", str(cause)
+        else:
+            status, error = "failed", f"{type(cause).__name__}: {cause}"
+            trace = "".join(traceback.format_exception(cause))
 
     finals = [FinalChapter.model_validate(c) for c in final.get("final_chapters", [])]
     report = {
         "run_id": run_id,
         "status": status,
         "error": error,
+        "traceback": trace,
         "profile": cfg.profile,
         "routing": cfg.routing(),
         "chapters_requested": count,
