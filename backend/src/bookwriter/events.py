@@ -60,7 +60,7 @@ class EventLog:
         self.on_event = on_event
         self.events: list[dict] = []
         path.parent.mkdir(parents=True, exist_ok=True)
-        self._file = open(path, "a", encoding="utf-8")  # noqa: SIM115 - closed in close()
+        self._file = open(path, "a", encoding="utf-8", newline="")  # noqa: SIM115 - closed in close()
 
     def record(self, event: dict) -> dict:
         event = {"seq": len(self.events) + 1, "run_id": self.run_id, **event}
