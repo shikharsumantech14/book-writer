@@ -54,5 +54,9 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      # The dashboard's event reducer must agree with the backend's report on the sample run.
+      - name: Tests
+        run: npm test
+
       - name: Build
         run: npm run build
