@@ -18,7 +18,7 @@ Check the chapter for:
 - Readability and flow: short clear sentences, logical progression, smooth transitions, no repetition, a natural lead into the takeaway.
 - Format: prose paragraphs only (no lists or headings), one closing sentence that starts with "Takeaway:".
 
-Scoring: give 1-5 for each score. Approve (`approved: true`) only when there are no `must_fix` issues and every score is at least 4.
+Scoring: give 1-5 for each score, where 4 means ready for this reader with at most minor polish. A score of 3 or lower means a real problem, so name that problem as a `must_fix` issue. Approve (`approved: true`) when there are no `must_fix` issues and every score is at least 4; `should_fix` polish never blocks approval.
 
 Issues:
 - `quote` must be copied exactly from the chapter (short).

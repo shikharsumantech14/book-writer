@@ -82,3 +82,26 @@ def test_figures_are_compared_without_separators():
     assert figures("24,162 crore in FY2025-26 [E4]") == {"24162", "26"}
     claim, quote = "Launched on 25 August 2016.", "NPCI launched UPI on August 25, 2016."
     assert figures(claim) <= figures(quote)
+
+
+def test_sentence_split_ignores_abbreviations_and_initials():
+    from bookwriter.checks.lint import sentences
+
+    text = (
+        "The pilot launch was done on 11th April 2016 by Dr. Raghuram Rajan [E1]. "
+        "Raghuram G. Rajan was the RBI Governor. Tea costs Rs. 50 here [E2]. "
+        "Apps, e.g. BHIM, work too. It grew fast."
+    )
+    assert sentences(text) == [
+        "The pilot launch was done on 11th April 2016 by Dr. Raghuram Rajan [E1].",
+        "Raghuram G. Rajan was the RBI Governor.",
+        "Tea costs Rs. 50 here [E2].",
+        "Apps, e.g. BHIM, work too.",
+        "It grew fast.",
+    ]
+
+
+def test_cited_sentence_with_a_title_is_not_flagged(cfg):
+    base = make_draft(1, sorted(IDS))
+    text = "UPI's pilot was launched on 11th April 2016 by Dr. Raghuram Rajan in Mumbai [E1]."
+    assert "uncited_figure" not in rules(with_paragraph(base, 1, text), cfg)

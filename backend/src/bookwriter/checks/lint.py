@@ -13,7 +13,12 @@ ANY_BRACKET = re.compile(r"\[[^\]]*\]")
 LIST_MARKER = re.compile(r"^\s*([-*•▪◦]|\d+[.)]|[a-z][.)])\s+", re.M)
 URL = re.compile(r"https?://|www\.", re.I)
 CITE_AFTER_STOP = re.compile(r"[.!?]\s*\[E\d+\]")
-_SENT_SPLIT = re.compile(r"(?<=[.!?])[\"”’)]?\s+(?=[A-Z\"“‘(₹0-9])")
+_SENT_BREAK = re.compile(r"(?<=[.!?])[\"”’)]?\s+(?=[A-Z\"“‘(₹0-9])")
+# A full stop after these is not the end of a sentence ("Dr. Raghuram Rajan", "Rs. 50", "e.g. BHIM").
+_ABBREVIATIONS = {
+    "dr", "mr", "mrs", "ms", "prof", "shri", "smt", "sh", "st", "jr", "sr", "no", "nos", "rs", "vs",
+    "etc", "e.g", "i.e", "govt", "ltd", "pvt", "inc", "co", "corp", "dept", "approx",
+}  # fmt: skip
 # A figure is a standalone number: "2016", "₹50", "24,162", "84%". Digits inside names and
 # codes ("UPI123Pay", "*99#", "4G") are not figures and need no citation.
 FIGURE = re.compile(r"(?<![A-Za-z0-9*#.,])\d+(?:[.,]\d+)*(?![A-Za-z0-9#])")
@@ -38,14 +43,28 @@ def word_count(draft: ChapterDraft) -> int:
     return len(strip_citations(body).split())
 
 
+def sentences(text: str) -> list[str]:
+    """Split prose into sentences, without breaking after abbreviations or initials ("Raghuram G. Rajan")."""
+    out, start = [], 0
+    for m in _SENT_BREAK.finditer(text):
+        before = text[start : m.start()].rstrip('"”’)')
+        last = before.split()[-1] if before.split() else ""
+        word = last.rstrip(".!?").lower()
+        if last.endswith(".") and (word in _ABBREVIATIONS or (len(word) == 1 and word.isalpha())):
+            continue
+        out.append(text[start : m.start()].strip())
+        start = m.end()
+    out.append(text[start:].strip())
+    return [s for s in out if s]
+
+
 def split_sentences(paragraphs: list[str]) -> list[tuple[int, int, str]]:
     """Return (sentence_id, paragraph_index, sentence) for every sentence."""
     out, sid = [], 0
     for pi, p in enumerate(paragraphs):
-        for s in _SENT_SPLIT.split(p.strip()):
-            if s.strip():
-                out.append((sid, pi, s.strip()))
-                sid += 1
+        for s in sentences(p.strip()):
+            out.append((sid, pi, s))
+            sid += 1
     return out
 
 
@@ -92,7 +111,7 @@ def lint(draft: ChapterDraft, evidence_ids: set[str], brief: Brief) -> list[Lint
     t = draft.takeaway.strip()
     if not t.startswith("Takeaway:"):
         add("takeaway", "The takeaway must be one sentence starting with 'Takeaway:'.")
-    if "\n" in t or len(_SENT_SPLIT.split(t)) > 2:
+    if "\n" in t or len(sentences(t)) > 2:
         add("takeaway", "The takeaway must be a single line (one sentence).")
     if CITE.search(t) or has_figure(t):
         add("takeaway", "The takeaway must not contain citations or figures; it is advice, not a fact.")
