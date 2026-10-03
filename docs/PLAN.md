@@ -389,7 +389,7 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 ## 15. Current status
 
-*Updated Saturday 3 October 2026, evening.*
+*Updated Sunday 4 October 2026.*
 
 **M1 (core engine) and M1.5 (first push) are done.**
 - Book graph with `Send` fan-out and the chapter subgraph; plain-Python routers with every stop condition in section 4.4; code safety net; runner recording `events.jsonl` and `run_report.json`; scorecard; `bookwriter run | report | graph | mcp`.
@@ -409,6 +409,21 @@ One deliberate change from section 9: runs and events are not copied into SQLite
 **M3 (dashboard) is done.** Next.js 16 + TypeScript + Tailwind 4 + shadcn/ui (Radix, Nova preset) + React Flow + Recharts in `frontend/`, built and checked against recorded runs only (no API spend). Four screens: Runs (with New run), Run (agent graph from `GET /graph` with live highlighting, chapter lanes, feed, cost ticker, replay, outline-review dialog), Book (serif reader, citation hover cards with the verified quote and fact-check result, sources panel) and Report (scorecard, cost, the Planner's outline). The design system is in `frontend/DESIGN.md`: CSS-variable tokens for light and dark, and an agent palette checked with a colour-blindness validator. CI adds lint, a type-check and a production build for the dashboard. The fifth screen in section 10, a `/design` page, was optional and is left out; DESIGN.md documents the system instead.
 
 **M4 (polish) is done.** Screenshots of every dashboard screen and of the terminal, generated from the sample run (`docs/screenshots/`); `docs/architecture.md` with a system diagram and the agent graph generated from code, both exported as PNG; tests for the research MCP server's tools and for the dashboard's event reducer (held to the backend's report on the sample run), both in CI; a dashboard lockfile that installs on Linux; `bookwriter replay --quiet --svg` and `report --svg`; README with screenshots, architecture and how the project was built; DEV_COST regenerated.
+
+**Outline review tested end to end (4 October).** One single-chapter `dev` run with review switched on: the run
+paused after the Planner, an edited chapter title was resumed from the dashboard and appeared in the book ($0.59).
+It showed the Editor asking for a reference list that code adds later; the Editor's and Planner's prompts now say
+so. Total API spend: $6.94.
+
+**M6 (redesign) is done** (section 18). Each page has the character of its job: the Run page is a dark
+mission-control console with an assembly line (one lane per chapter, stations and loops from `GET /graph`,
+send-backs counted), a timeline built from the event log, a HUD and a filterable feed; the Book page is a printed
+page whose citations open their source in the margin instead of over the text; the Report is a data dashboard
+(KPIs, scorecard matrix, editor-score heatmap, verdict and source bars, cost, spend over time, effort, tokens);
+Runs has a hero and the latest book as a cover. A new `/explain` page draws "How a book gets made" and the system
+diagram, captured as the README's pictures in light and dark. React Flow is gone. README rewritten with a plain
+"What is this?" opening and new screenshots; the generated agent graph now lives in `docs/architecture.md` only,
+still checked by a test. No API spend.
 
 **Next:** M5: submit the repository link through the Google Form and by email.
 
@@ -439,7 +454,7 @@ One deliberate change from section 9: runs and events are not copied into SQLite
 
 ---
 
-## 18. M6: Redesign of the dashboard and the README visuals (proposed, 4 October)
+## 18. M6: Redesign of the dashboard and the README visuals (approved and done, 4 October)
 
 **Why.** The dashboard works but looks like a default component kit, and the agent graph (generic boxes and thin
 lines) does not show what is really happening: three chapters moving through the same stations in parallel, and

@@ -1,6 +1,16 @@
 # Architecture
 
-![System architecture](architecture.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="architecture-dark.png">
+  <img alt="How the system fits together" src="architecture.png">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="how-it-works-dark.png">
+  <img alt="How a book gets made" src="how-it-works.png">
+</picture>
+
+Both pictures are drawn by the dashboard's `/explain` page. The diagrams below are their exact, text versions.
 
 ## System
 
@@ -49,7 +59,7 @@ flowchart TB
 | LLM layer | `llm.py`, `pricing.py` | The one place that calls Claude: routing per role, structured outputs, the tool loop, prompt caching, metering and the cost cap |
 | Runner and store | `runner.py`, `store.py`, `events.py` | Runs a book, records every event, writes the report; a run is its folder |
 | HTTP API | `api/app.py`, `api/runs.py` | Starts, follows, reviews and cancels runs; streams events; serves outputs, the graph, config and estimates |
-| Dashboard | `frontend/` | Runs, live run and replay, book reader, report |
+| Dashboard | `frontend/` | Runs; the run as a mission-control console, live or replayed; the book reader; the report dashboard; the How it works page |
 
 ## Agent graph
 

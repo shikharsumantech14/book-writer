@@ -2,29 +2,42 @@
 
 [![CI](https://github.com/shikharsumantech14/book-writer/actions/workflows/ci.yml/badge.svg)](https://github.com/shikharsumantech14/book-writer/actions/workflows/ci.yml)
 
-Take-home assignment for the Patel Group AI Engineer role. Six agents (Planner, Researcher, Writer, Editor,
-Fact-checker and Chief Editor) research and write *Pay Me on UPI: How Digital Payments Changed Small Business
-in India*, a three-chapter book for first-time shop owners. Every fact, figure and date carries a numbered
-citation to a real page that the system read and verified itself.
+**What is this?** A team of AI agents that writes a short book on its own, with every fact cited. You give it a
+brief: a topic, a reader and a length. It plans the chapters, searches the web for facts, writes, and then reviews
+its own work the way an editor and a fact-checker would, sending chapters back until they pass. Every fact in the
+finished book links to the web page it came from, and the system read that page and checked the quote itself.
 
-**Read the book:** [docs/sample-output/book.md](docs/sample-output/book.md) (or the
+It was built as the take-home assignment for the Patel Group AI Engineer role. The brief asks for a three-chapter
+book for first-time shop owners: *Pay Me on UPI: How Digital Payments Changed Small Business in India*.
+
+**Read the book it wrote:** [docs/sample-output/book.md](docs/sample-output/book.md) (or the
 [HTML version](docs/sample-output/book.html)). It comes from one full run on the `showcase` profile: 2,501 words,
 16 references, 29 of 29 checked claims supported by their sources, every link working, and the system's own
 scorecard passed. Chapters 2 and 3 carry one warning each: the Editor's last style notes were not applied,
 because its send-back budget ran out. The run's [event log](docs/sample-output/events.jsonl) and
 [report](docs/sample-output/run_report.json) are committed next to it.
 
-**Status:** complete: agent engine, CLI, research MCP server, HTTP API with live streaming, dashboard, tests
-and CI (milestones M1 to M4). The design, milestones and cost plan are in [docs/PLAN.md](docs/PLAN.md); the
-architecture is in [docs/architecture.md](docs/architecture.md).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/how-it-works-dark.png">
+  <img alt="How a book gets made: the brief goes to the Planner, an optional outline review, then each chapter goes through the Researcher, Writer, Lint, Editor, Fact-checker and Safety net, with reviewers sending work back; the Chief Editor and the Assembler finish the book" src="docs/how-it-works.png">
+</picture>
 
-![The live run view: agents light up per chapter while they work; the Editor's send-back to the Writer animates its loop](docs/screenshots/live-run.png)
+**Status:** complete: agent engine, CLI, research MCP server, HTTP API with live streaming, dashboard, tests and
+CI (milestones M1 to M4), then a redesign of the dashboard and these pictures (M6). The design, milestones and cost
+plan are in [docs/PLAN.md](docs/PLAN.md); the architecture is in [docs/architecture.md](docs/architecture.md).
 
-| Book reader: hover a citation for its verified quote | Report: the scorecard against the brief |
+## See it work
+
+![The Run page mid-replay: a dark control room with spend, calls and progress at the top; three chapters moving through their stations on the assembly line, with counted loops where reviewers sent work back; a timeline of who worked when; and the activity feed](docs/screenshots/live-run.png)
+
+The **Run** page streams a run live, or replays a recorded one: each chapter moves along its lane, the station at
+work glows, and every time a reviewer sends work back a loop is drawn and counted.
+
+| **Book:** point at any [n] and its source opens in the margin, with the quote checked on that page | **Report:** the verdict, the key numbers, every rule of the brief per chapter, and the Editor's scores |
 |---|---|
-| ![Book reader](docs/screenshots/book.png) | ![Scorecard](docs/screenshots/report-scorecard.png) |
-| **Report: cost per agent, model and chapter** | **Runs, with the cost of every run** |
-| ![Cost](docs/screenshots/report-cost.png) | ![Runs](docs/screenshots/runs.png) |
+| ![The book page: a printed-page layout with a drop cap, and the source of citation 2 open in the margin with its verified quote](docs/screenshots/book.png) | ![The report dashboard: verdict banner, key numbers, scorecard matrix and editor score heatmap](docs/screenshots/report.png) |
+| **Report, cost and effort:** cost per agent with its model, spend over time, rounds per chapter, tokens | **Runs:** the latest book and every run with its cost |
+| ![Cost by agent, spend over time, effort by chapter and token mix, in dark mode](docs/screenshots/report-cost.png) | ![The runs page: a one-line explanation, the latest book as a cover with its numbers, and the run history](docs/screenshots/runs.png) |
 
 <details>
 <summary>The same run in the terminal</summary>
@@ -83,7 +96,10 @@ run replayed, without any API key.
 
 ## How it works
 
-![System architecture](docs/architecture.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture-dark.png">
+  <img alt="How the system fits together: the dashboard, the command line and Claude Desktop come in at the top; the HTTP API and the agent engine in the middle; Claude, the run folders, the research tools and the web underneath" src="docs/architecture.png">
+</picture>
 
 The agents never talk to each other directly. Each one reads and writes typed fields on a shared state
 (Pydantic models), and plain Python routers decide where the work goes next. Every review loop has a budget,
@@ -109,57 +125,12 @@ on the fastest. Routing, effort, prices and loop budgets all live in
 
 ### Agent graph
 
-The planner fans out one chapter subgraph per chapter, run in parallel. Dotted arrows are router decisions.
-`outline_review` is human in the loop: when a run asks for it, the graph pauses after the Planner until a
-person approves, edits or rejects the outline, then continues from its checkpoint.
-This diagram is generated from the compiled LangGraph graph (`uv run bookwriter graph`), and CI fails if it
-drifts from the code.
-
-<!-- agent-graph:start -->
-```mermaid
----
-config:
-  flowchart:
-    curve: linear
----
-graph TD;
-	__start__([<p>__start__</p>]):::first
-	planner(planner)
-	outline_review(outline_review)
-	chief_editor(chief_editor)
-	assembler(assembler)
-	__end__([<p>__end__</p>]):::last
-	__start__ --> planner;
-	chapter\3asafety_net --> chief_editor;
-	chief_editor --> assembler;
-	outline_review -.-> chapter\3a__start__;
-	planner --> outline_review;
-	assembler --> __end__;
-	subgraph chapter
-	chapter\3a__start__(<p>__start__</p>)
-	chapter\3aresearcher(researcher)
-	chapter\3awriter(writer)
-	chapter\3alint(lint)
-	chapter\3aeditor(editor)
-	chapter\3afact_checker(fact_checker)
-	chapter\3asafety_net(safety_net)
-	chapter\3a__start__ --> chapter\3aresearcher;
-	chapter\3aeditor -.-> chapter\3afact_checker;
-	chapter\3aeditor -.-> chapter\3awriter;
-	chapter\3afact_checker -.-> chapter\3aresearcher;
-	chapter\3afact_checker -.-> chapter\3asafety_net;
-	chapter\3afact_checker -.-> chapter\3awriter;
-	chapter\3alint -.-> chapter\3aeditor;
-	chapter\3alint -.-> chapter\3afact_checker;
-	chapter\3alint -.-> chapter\3awriter;
-	chapter\3aresearcher --> chapter\3awriter;
-	chapter\3awriter --> chapter\3alint;
-	end
-	classDef default fill:#f2f0ff,line-height:1.2
-	classDef first fill-opacity:0
-	classDef last fill:#bfb6fc
-```
-<!-- agent-graph:end -->
+The chapter workshop in the picture at the top is the real graph: the Planner fans out one chapter subgraph per
+chapter, run in parallel, and plain-Python routers decide every send-back. `outline_review` is human in the loop:
+when a run asks for it, the graph pauses after the Planner until a person approves, edits or rejects the outline,
+then continues from its checkpoint. The exact graph, generated from the compiled LangGraph graph
+(`uv run bookwriter graph`), is in [docs/architecture.md](docs/architecture.md#agent-graph); CI fails if it drifts
+from the code.
 
 ### Loop budgets
 
@@ -239,15 +210,17 @@ sample, without spending anything. One run at a time: a second `POST /runs` whil
 
 ## Dashboard
 
-A Next.js + shadcn/ui app in [`frontend/`](frontend/) that reads everything from the API. Each agent has one
-colour and one icon, used the same way everywhere ([design system](frontend/DESIGN.md)).
+A Next.js + shadcn/ui app in [`frontend/`](frontend/) that reads everything from the API. Each page has the
+character of its job, and each agent keeps one colour and one icon everywhere
+([design system](frontend/DESIGN.md)).
 
-| Screen | What it shows |
+| Page | What it shows |
 |---|---|
-| Runs | Run history with status, scorecard, cost and time; New run, with routing per agent and a cost estimate from measured runs |
-| Run | The agent graph from `GET /graph`: agents light up as they work, with chips showing which chapters are at each step, and a send-back animates its loop in the reviewer's colour. Chapter lanes with round counters, an activity feed, a cost and token ticker. Live while a run is going; Replay for a finished one. The outline review dialog appears here when a run waits for it |
-| Book | The book in a serif reading layout. Hover any `[n]` for the source, the quote verified on that page, the link status and the Fact-checker's verdict; a sources panel per chapter |
-| Report | The scorecard against the brief, chapter by chapter; cost per agent, model and chapter with token kinds; the Planner's outline, style guide and glossary |
+| Runs | What the product is in one line, the latest book as a cover with its numbers, and every run with its status, scorecard, cost and time. New run starts one, with the model routing per agent and a cost estimate from measured runs |
+| Run | A mission-control console, live or replayed: spend against the cost cap, model calls, tokens and progress; the assembly line, one lane per chapter, where the station at work glows and every send-back draws a counted loop back to the Writer or the Researcher; a timeline of who worked when; a feed filterable by chapter. The outline review dialog appears here when a run waits for it |
+| Book | The book as a printed page: a title page, chapter openers with a drop cap, the takeaway as a pull quote. Point at any `[n]` and its source opens in the margin, with the quote verified on that page, the link status and the Fact-checker's verdict, without covering the text |
+| Report | A data dashboard: the verdict and key numbers; every rule of the brief per chapter; the Editor's scores as a heatmap; fact-check verdicts and source mix per chapter; cost per agent and model, spend over time, rounds per chapter and the token mix. The chapter details, usage tables and the Planner's outline are in two more tabs |
+| How it works | The two pictures in this README. The dashboard draws them, so they always look like the product |
 
 ## Use the research tools from Claude (MCP)
 
@@ -294,12 +267,14 @@ backend/
     estimate.py          pre-run cost estimate from measured runs
   tests/                 unit tests and a fake-LLM end-to-end run (no API cost)
 frontend/                Next.js dashboard (DESIGN.md: the design system)
-  src/app/               routes: runs, run (live/replay), book, report
-  src/components/        agent graph, chapter lanes, feed, book reader, scorecard, cost charts
-  src/lib/               API types, agent identities, the event-stream reducer
+  src/app/               routes: runs, run (live/replay), book, report, explain
+  src/components/        assembly line, timeline and feed; book reader; report dashboard; the explain pictures
+  src/lib/               API types, agent identities, the event-stream reducer, the timeline builder
 docs/
   PLAN.md                the approved design and milestones
-  architecture.md        system and agent-graph diagrams (+ PNG exports)
+  architecture.md        system diagram and the agent graph generated from code
+  how-it-works*.png,     the README pictures, drawn by the dashboard's /explain page
+  architecture*.png
   screenshots/           the dashboard and the terminal, from the sample run
   DEV_COST.md            tokens spent building the project
   sample-output/         the sample book, its event log and its run report
@@ -311,15 +286,21 @@ scripts/dev_usage.py     generates DEV_COST.md
 - **Plan first.** [docs/PLAN.md](docs/PLAN.md) was written and reviewed before any engine code: a second model
   reviewed the first draft (section 0 records what changed and why), and the plan was approved before code was
   written. Deviations are recorded in its status section.
-- **Milestones as commits.** Engine (M1), first push (M1.5), service (M2), dashboard (M3) and polish (M4), each
-  a run of small conventional commits, tagged `m1-engine` to `m4-polish`. The pushed state passed CI at every step.
+- **Milestones as commits.** Engine (M1), first push (M1.5), service (M2), dashboard (M3), polish (M4) and
+  redesign (M6), each a run of small conventional commits, tagged `m1-engine` to `m6-redesign`. The pushed state
+  passed CI at every step.
 - **Cheap runs first.** Every paid run was approved in advance and capped. Three single-chapter `dev` runs and
   one full `dev` book ($3.42 together) found the real bugs before the one `showcase` run ($2.93): a lint rule
   that read "UPI123Pay" as an uncited figure, a sentence splitter that broke on "Dr.", evidence claims that said
   more than their quotes, a Fact-checker stricter than its own instructions, Editor rules that contradicted the
-  Writer's, and a truncated PDF that crashed page reading. Each fix came with a test. Total API spend for the
-  whole project: $6.35.
-- **Measured development cost.** Building this with Claude Code used about $58 of model time at API list prices
+  Writer's, and a truncated PDF that crashed page reading. Each fix came with a test. One more single-chapter run
+  ($0.59) tested outline review end to end. Total API spend for the whole project: $6.94.
+- **A second design pass.** The first dashboard worked but looked like a component kit, and the README diagrams
+  were plain Mermaid. M6 gave each page the character of its job (a console for the run, a printed page for the
+  book, a data dashboard for the report) and replaced the diagrams with pictures the dashboard draws. It was
+  planned and approved first ([PLAN.md section 18](docs/PLAN.md)), then built and checked against recorded runs,
+  at no API cost.
+- **Measured development cost.** Building this with Claude Code used about $85 of model time at API list prices
   (it ran on a subscription, so nothing was charged per token); 99% of those tokens were cheap cache reads.
   Broken down by session and model in [docs/DEV_COST.md](docs/DEV_COST.md), generated from the session
   transcripts.
@@ -337,5 +318,6 @@ cd frontend && npm test && npm run lint && npm run typecheck
 The backend's end-to-end test runs the whole graph with a scripted fake Claude client and canned web pages,
 driving every send-back loop at least once at no API cost; other tests cover lint, routers and stop conditions,
 quote verification, the fetch fallback, the MCP server, the API (including outline review and cancellation),
-the committed sample book and the generated diagrams. The dashboard's tests hold its event reducer to the
-backend's report on the sample run. CI runs all of it, plus a production build of the dashboard, on every push.
+the committed sample book and the generated diagrams. The dashboard's tests hold its event reducer and its
+timeline builder to the backend's report on the sample run. CI runs all of it, plus a production build of the
+dashboard, on every push.

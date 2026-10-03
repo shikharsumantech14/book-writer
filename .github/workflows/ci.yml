@@ -27,7 +27,7 @@ jobs:
           uv run ruff format --check src tests ../scripts
 
       # No API keys needed: the end-to-end test uses a fake Claude client and canned web pages.
-      # Also grades the committed sample book against the brief and checks the README diagram.
+      # Also grades the committed sample book against the brief and checks the generated agent graph in the docs.
       - name: Tests
         run: uv run pytest
 
