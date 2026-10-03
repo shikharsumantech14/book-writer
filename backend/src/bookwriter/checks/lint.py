@@ -14,10 +14,23 @@ LIST_MARKER = re.compile(r"^\s*([-*•▪◦]|\d+[.)]|[a-z][.)])\s+", re.M)
 URL = re.compile(r"https?://|www\.", re.I)
 CITE_AFTER_STOP = re.compile(r"[.!?]\s*\[E\d+\]")
 _SENT_SPLIT = re.compile(r"(?<=[.!?])[\"”’)]?\s+(?=[A-Z\"“‘(₹0-9])")
+# A figure is a standalone number: "2016", "₹50", "24,162", "84%". Digits inside names and
+# codes ("UPI123Pay", "*99#", "4G") are not figures and need no citation.
+FIGURE = re.compile(r"(?<![A-Za-z0-9*#.,])\d+(?:[.,]\d+)*(?![A-Za-z0-9#])")
 
 
 def strip_citations(text: str) -> str:
     return re.sub(r"\s*\[E\d+\]", "", text)
+
+
+def has_figure(text: str) -> bool:
+    """Does the text state a number? Citation markers ([E3], [3]) are ignored."""
+    return bool(FIGURE.search(re.sub(r"\[E?\d+\]", "", text)))
+
+
+def figures(text: str) -> set[str]:
+    """The numbers a text states, without thousands separators: "24,162 crore" -> {"24162"}."""
+    return {f.replace(",", "") for f in FIGURE.findall(re.sub(r"\[E?\d+\]", "", text))}
 
 
 def word_count(draft: ChapterDraft) -> int:
@@ -81,7 +94,7 @@ def lint(draft: ChapterDraft, evidence_ids: set[str], brief: Brief) -> list[Lint
         add("takeaway", "The takeaway must be one sentence starting with 'Takeaway:'.")
     if "\n" in t or len(_SENT_SPLIT.split(t)) > 2:
         add("takeaway", "The takeaway must be a single line (one sentence).")
-    if CITE.search(t) or re.search(r"\d", t):
+    if CITE.search(t) or has_figure(t):
         add("takeaway", "The takeaway must not contain citations or figures; it is advice, not a fact.")
 
     used = {c for p in draft.paragraphs for c in cited_ids(p)}
@@ -92,7 +105,7 @@ def lint(draft: ChapterDraft, evidence_ids: set[str], brief: Brief) -> list[Lint
         add("too_few_citations", "Use at least 3 different pieces of evidence from the pack.")
 
     for _sid, pi, s in split_sentences(draft.paragraphs):
-        if re.search(r"\d", strip_citations(s)) and not CITE.search(s):
+        if has_figure(s) and not CITE.search(s):
             add(
                 "uncited_figure",
                 f'Paragraph {pi + 1}: "{_short(s)}" contains a number but no citation. '

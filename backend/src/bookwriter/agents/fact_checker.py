@@ -11,9 +11,8 @@ from __future__ import annotations
 
 import asyncio
 import json
-import re
 
-from ..checks.lint import CITE, split_sentences, strip_citations
+from ..checks.lint import CITE, has_figure, split_sentences, strip_citations
 from ..events import emit
 from ..models import (
     ChapterDraft,
@@ -55,7 +54,7 @@ async def fact_check(deps: Deps, number: int, draft: ChapterDraft, evidence: lis
     for sid, _, s in sentences:
         ids = CITE.findall(s)
         if not ids:
-            has_digit = bool(re.search(r"\d", strip_citations(s)))
+            has_digit = has_figure(s)
             if factual.get(sid) or has_digit:
                 checks.append(
                     ClaimCheck(
@@ -165,7 +164,9 @@ async def _judge(deps, number, to_judge, by_id, contexts, evidence):
     blocks = []
     for sid, s, ids in to_judge:
         ev = "\n".join(
-            f'  [{i}] quote: "{by_id[i].quote}"\n       context: "...{contexts.get(i, "")[:700]}..."' for i in ids
+            f'  [{i}] source: {by_id[i].source_name}, "{by_id[i].title}"\n'
+            f'       quote: "{by_id[i].quote}"\n       context: "...{contexts.get(i, "")[:700]}..."'
+            for i in ids
         )
         blocks.append(f'<sentence id="{sid}">\n{s}\n<cited_evidence>\n{ev}\n</cited_evidence>\n</sentence>')
     user = f"<evidence_pack_summary>\n{pack}\n</evidence_pack_summary>\n\n" + "\n\n".join(blocks)

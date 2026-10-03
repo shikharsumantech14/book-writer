@@ -7,16 +7,14 @@ unverified fact; the report lists every removal.
 
 from __future__ import annotations
 
-import re
-
 from ..models import ChapterDraft, ClaimCheck, FactCheckReport
-from .lint import split_sentences, strip_citations
+from .lint import has_figure, split_sentences
 
 
 def must_remove(check: ClaimCheck) -> bool:
     if check.verdict in ("UNSUPPORTED", "PARTIAL"):
         return True
-    return check.verdict == "UNCITED" and bool(re.search(r"\d", strip_citations(check.sentence)))
+    return check.verdict == "UNCITED" and has_figure(check.sentence)
 
 
 def apply_safety_net(draft: ChapterDraft, report: FactCheckReport) -> tuple[ChapterDraft, list[ClaimCheck]]:

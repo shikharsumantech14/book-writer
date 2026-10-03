@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 
-from .checks.lint import LIST_MARKER, URL, split_sentences
+from .checks.lint import LIST_MARKER, URL, has_figure, split_sentences
 from .config import Brief
 from .models import FinalChapter
 from .render import chapter_markdown
@@ -63,8 +63,7 @@ def grade_chapter(ch: FinalChapter, brief: Brief) -> dict:
     complete = all(r.source_name.strip() and r.title.strip() and r.url.startswith("http") for r in ch.references)
     checks.append(_check("reference_format", complete and bool(ch.references), "source name, title and link"))
 
-    uncited = [s for _, _, s in split_sentences(ch.paragraphs) if re.search(r"\d", NUM_CITE.sub("", s))]
-    uncited = [s for s in uncited if not NUM_CITE.search(s)]
+    uncited = [s for _, _, s in split_sentences(ch.paragraphs) if has_figure(s) and not NUM_CITE.search(s)]
     checks.append(_check("figures_cited", not uncited, f"{len(uncited)} sentence(s) with a figure but no citation"))
 
     verdicts = [c.verdict for c in ch.claim_checks]

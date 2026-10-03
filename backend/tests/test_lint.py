@@ -66,3 +66,19 @@ def test_split_sentences_keeps_paragraph_index():
     out = split_sentences(["First one [E1]. Second one.", "Third one."])
     assert [(sid, pi) for sid, pi, _ in out] == [(0, 0), (1, 0), (2, 1)]
     assert out[0][2] == "First one [E1]."
+
+
+def test_names_and_codes_with_digits_are_not_figures(cfg):
+    base = make_draft(1, sorted(IDS))
+    for text in ("Feature phones can use UPI123Pay.", "Dial *99# on any phone.", "A 4G phone works too."):
+        assert "uncited_figure" not in rules(with_paragraph(base, 1, text), cfg), text
+    for text in ("UPI launched in 2016.", "Tea costs ₹50.", "Its share was 84%.", "It grew 1.78 crore."):
+        assert "uncited_figure" in rules(with_paragraph(base, 1, text), cfg), text
+
+
+def test_figures_are_compared_without_separators():
+    from bookwriter.checks.lint import figures
+
+    assert figures("24,162 crore in FY2025-26 [E4]") == {"24162", "26"}
+    claim, quote = "Launched on 25 August 2016.", "NPCI launched UPI on August 25, 2016."
+    assert figures(claim) <= figures(quote)
