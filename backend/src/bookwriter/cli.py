@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from datetime import datetime
+from pathlib import Path
 
 import typer
 from rich.console import Console
@@ -119,21 +120,29 @@ def run(
 
 
 @app.command()
-def report(run_id: str = typer.Argument(..., help="Run id (a folder name under data/runs).")) -> None:
+def report(
+    run: str = typer.Argument(..., help="A run id (folder under data/runs) or a path to a run_report.json."),
+) -> None:
     """Print the cost breakdown and scorecard of a finished run."""
-    path = get_settings().data_dir / "runs" / run_id / "run_report.json"
+    path = Path(run) if run.endswith(".json") else get_settings().data_dir / "runs" / run / "run_report.json"
     data = json.loads(path.read_text(encoding="utf-8"))
-    console.print(f"Run {run_id}: {data['status']} on '{data['profile']}', {data['duration_s']:.0f}s")
+    console.print(f"Run {data['run_id']}: {data['status']} on '{data['profile']}', {data['duration_s']:.0f}s")
     _print_usage(data["usage"])
     _print_scorecard(data["scorecard"])
 
 
 @app.command()
-def graph() -> None:
+def graph(
+    readme: Path = typer.Option(None, help="Rewrite the generated diagram block in this Markdown file instead."),
+) -> None:
     """Print the agent graph as Mermaid, generated from the LangGraph graph itself."""
-    from .graph import mermaid
+    from .graph import mermaid, sync_diagram
 
-    print(mermaid())
+    if readme is None:
+        print(mermaid())
+        return
+    readme.write_text(sync_diagram(readme.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
+    console.print(f"Updated the agent graph in {readme}")
 
 
 @app.command()

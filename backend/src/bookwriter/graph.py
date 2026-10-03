@@ -318,3 +318,16 @@ def build_graph() -> CompiledStateGraph:
 def mermaid() -> str:
     """The architecture diagram, generated from the graph itself."""
     return build_graph().get_graph(xray=True).draw_mermaid()
+
+
+GRAPH_START, GRAPH_END = "<!-- agent-graph:start -->", "<!-- agent-graph:end -->"
+
+
+def mermaid_block() -> str:
+    return f"{GRAPH_START}\n```mermaid\n{mermaid().strip()}\n```\n{GRAPH_END}"
+
+
+def sync_diagram(text: str) -> str:
+    """Replace the generated diagram between the markers in a Markdown document."""
+    start, end = text.index(GRAPH_START), text.index(GRAPH_END) + len(GRAPH_END)
+    return text[:start] + mermaid_block() + text[end:]
