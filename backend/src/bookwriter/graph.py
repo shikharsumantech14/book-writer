@@ -1,6 +1,6 @@
 """The agent graph: a book graph that fans out to one chapter subgraph per chapter.
 
-    planner -> (Send x N) chapter -> chief_editor -> assembler
+    planner -> outline_review -> (Send x N) chapter -> chief_editor -> assembler
 
     chapter: researcher -> writer -> lint -> editor -> fact_checker -> safety_net
              with send-back loops chosen by routers.py
@@ -12,16 +12,17 @@ agent. Dependencies arrive as LangGraph runtime context (`Deps`).
 
 from __future__ import annotations
 
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.runtime import Runtime, get_runtime
-from langgraph.types import Send
+from langgraph.types import Send, interrupt
 
 from . import routers
 from .agents.chief_editor import harmonize
 from .agents.editor import review_chapter
 from .agents.fact_checker import fact_check
-from .agents.planner import plan_book
+from .agents.planner import normalize_outline, plan_book
 from .agents.researcher import missing_fact_needs, research_chapter
 from .agents.writer import write_chapter
 from .checks.lint import lint
@@ -238,6 +239,19 @@ async def planner(s: BookState, runtime: Runtime[Deps]) -> dict:
     return {"outline": outline.model_dump()}
 
 
+def outline_review(s: BookState, runtime: Runtime[Deps]) -> dict:
+    """Human in the loop (off by default): pause until a person approves or edits the outline."""
+    deps = runtime.context
+    if not deps.human_review:
+        return {}
+    decision = interrupt({"outline": s["outline"]})  # the run waits here; the API resumes it
+    if not decision.get("outline"):
+        return {}
+    edited = normalize_outline(Outline.model_validate(decision["outline"]), deps.cfg)
+    emit("agent_done", "Outline edited by a person", agent="planner", outline=edited.model_dump())
+    return {"outline": edited.model_dump()}
+
+
 def fan_out(s: BookState) -> list[Send]:
     """One chapter subgraph per chapter, run in parallel (bounded by `parallel_chapters`)."""
     outline = s["outline"]
@@ -300,19 +314,21 @@ def assembler(s: BookState, runtime: Runtime[Deps]) -> dict:
     return {"final_chapters": [c.model_dump() for c in finals], "book_markdown": md}
 
 
-def build_graph() -> CompiledStateGraph:
+def build_graph(checkpointer: BaseCheckpointSaver | None = None) -> CompiledStateGraph:
     g = StateGraph(BookState, context_schema=Deps)
     g.add_node("planner", planner)
+    g.add_node("outline_review", outline_review)
     g.add_node("chapter", build_chapter_graph())
     g.add_node("chief_editor", chief_editor)
     g.add_node("assembler", assembler)
 
     g.add_edge(START, "planner")
-    g.add_conditional_edges("planner", fan_out, ["chapter"])
+    g.add_edge("planner", "outline_review")
+    g.add_conditional_edges("outline_review", fan_out, ["chapter"])
     g.add_edge("chapter", "chief_editor")
     g.add_edge("chief_editor", "assembler")
     g.add_edge("assembler", END)
-    return g.compile(name="book")
+    return g.compile(name="book", checkpointer=checkpointer)
 
 
 def mermaid() -> str:

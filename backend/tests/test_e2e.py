@@ -151,3 +151,27 @@ async def test_failure_reports_the_root_cause(cfg, monkeypatch):
 async def test_rejects_bad_chapter_count(cfg):
     with pytest.raises(ValueError):
         await run_book(cfg, chapters=4)
+
+
+async def test_human_review_edits_the_outline_before_writing(cfg, monkeypatch):
+    async def review(payload):
+        edited = json.loads(json.dumps(payload["outline"]))
+        edited["chapters"][0]["title"] = "Edited by a person"
+        return {"action": "edit", "outline": edited}
+
+    result, client = await _run(cfg, monkeypatch, chapters=1, review=review)
+    assert result.status == "completed"
+    writer_prompts = [c["system"] for c in client.calls if c["what"] == "ChapterDraft"]
+    assert writer_prompts and all("Edited by a person" in p for p in writer_prompts)
+    kinds = [e["kind"] for e in read_events(result.run_dir / "events.jsonl")]
+    assert kinds.index("review_requested") < kinds.index("review_done") < kinds.index("chapter_done")
+
+
+async def test_rejecting_the_outline_cancels_the_run(cfg, monkeypatch):
+    async def review(payload):
+        return {"action": "cancel"}
+
+    result, client = await _run(cfg, monkeypatch, chapters=1, review=review)
+    assert result.status == "cancelled" and "rejected" in result.report["error"]
+    assert [c["what"] for c in client.calls] == ["Outline"]  # nothing ran after the Planner
+    assert (result.run_dir / "run_report.json").exists()

@@ -33,6 +33,7 @@ class Deps:
     llm: LLM
     research: ResearchMCP
     run_dir: Path
+    human_review: bool = False  # pause after the Planner so a person can approve or edit the outline
 
 
 class BookState(TypedDict, total=False):
