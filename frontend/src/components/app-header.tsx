@@ -2,6 +2,7 @@
 
 import { BookOpenText, Moon, Sun } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,11 @@ export function AppHeader() {
   const { resolvedTheme, setTheme } = useTheme()
   const health = useApi<{ ok: boolean; version: string }>("/health", 15000)
   const online = Boolean(health.data?.ok) && !health.error
+  const pathname = usePathname()
+  const nav = [
+    { href: "/", label: "Runs", active: pathname === "/" || pathname.startsWith("/runs") },
+    { href: "/explain", label: "How it works", active: pathname === "/explain" },
+  ]
 
   return (
     <header className="sticky top-0 z-30 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -27,6 +33,21 @@ export function AppHeader() {
             <span className="block text-[11px] font-normal text-muted-foreground">six agents, one cited book</span>
           </span>
         </Link>
+
+        <nav className="ml-2 hidden items-center gap-1 sm:flex" aria-label="Main">
+          {nav.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={cn(
+                "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                n.active ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
 
         <div className="ml-auto flex items-center gap-2">
           <Tooltip>
