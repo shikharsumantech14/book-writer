@@ -319,6 +319,17 @@ class FakeAnthropic:
                         source_name="s",
                     )
                 )
+                blocks.append(  # a claim that says more than its quote: rejected by code
+                    _tool(
+                        "record_evidence",
+                        fact_need_id="F1",
+                        claim="Merchants accepted 50 percent more digital payments.",
+                        quote="This page explains how small businesses across India receive money from customers.",
+                        url=urls[0],
+                        title="t",
+                        source_name="s",
+                    )
+                )
                 blocks.append(
                     _tool(
                         "record_evidence",

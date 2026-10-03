@@ -75,6 +75,7 @@ async def test_full_book_runs_every_loop(cfg, monkeypatch):
     book = (result.run_dir / "book.md").read_text(encoding="utf-8")
     assert book.count("## Chapter") == 3 and "Imagine a quiet morning" in book
     assert "### References" in book and "| Mint" not in book  # titles cleaned of site suffixes
+    assert "National Payments Corporation of India (NPCI)." in book  # canonical publisher, not the model's "s"
     assert (result.run_dir / "book.html").exists()
     saved = json.loads((result.run_dir / "run_report.json").read_text(encoding="utf-8"))
     assert saved["status"] == "completed"
@@ -99,6 +100,10 @@ async def test_events_are_recorded_in_order(cfg, monkeypatch):
     } <= kinds
     assert events[0]["kind"] == "run_start" and events[-1]["kind"] == "run_done"
     assert all(e["run_id"] == result.run_id for e in events)
+    # the Researcher's record tool refused a quote missing from the page and a claim adding a figure
+    rejected = [e["message"] for e in events if e["kind"] == "evidence_rejected"]
+    assert any("Quote not found" in m for m in rejected)
+    assert any("Claim states 50" in m for m in rejected)
 
 
 async def test_single_chapter_dev_profile(monkeypatch):

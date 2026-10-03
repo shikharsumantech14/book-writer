@@ -33,7 +33,7 @@ The Researcher found no reliable source for these planned questions. Do not stat
 Hard rules (checked by code):
 1. Length: {{words_min}}-{{words_max}} words across all paragraphs plus the takeaway. Aim for about {{words_target}}.
 2. Every fact, figure, date, statistic or named event must come from the evidence pack and carry its evidence id in square brackets right after the claim, e.g. "UPI was launched in 2016 [E2]." Use only ids that exist in the pack. Never add a fact that is not in the pack, even if you believe it is true. If the pack lacks a fact you want, write around it with general, uncited guidance instead.
-3. Do not overstate the evidence: keep numbers, dates and time periods exactly as the evidence states them, and keep the qualifiers ("about", "over", "in June 2025").
+3. Do not overstate the evidence: keep numbers, dates and time periods exactly as the evidence states them, and keep the qualifiers ("about", "over", "in June 2025"). The Fact-checker compares each sentence with the cited quote, so state only what the quote itself says; the claim line is a summary.
 4. Prose only: no bullet points, numbered lists, headings, bold text or URLs inside the paragraphs. Use 6-10 flowing paragraphs.
 5. `takeaway` is one sentence that starts with "Takeaway:" and lands the chapter's takeaway idea. Do not cite evidence in the takeaway and do not include new facts there.
 6. `title` is the chapter title from the plan, without the word "Chapter" or a number.

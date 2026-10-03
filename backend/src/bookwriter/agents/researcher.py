@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from ..checks.lint import figures
 from ..events import emit
 from ..llm import ToolSpec
 from ..models import ChapterPlan, Evidence, FactNeed, Outline
@@ -76,6 +77,20 @@ async def research_chapter(
             return "Rejected: read this page with read_page first; evidence must come from pages you have read."
         if any(e.quote.strip() == args["quote"].strip() for e in evidence):
             return "Rejected: this quote is already recorded."
+        extra = sorted(figures(args["claim"]) - figures(args["quote"]))
+        if extra:
+            emit(
+                "evidence_rejected",
+                f"Claim states {', '.join(extra)}, which its quote does not",
+                agent="researcher",
+                chapter=ch,
+                url=url,
+            )
+            return (
+                f"Rejected: the claim states {', '.join(extra)}, which the quote does not. The Writer and "
+                "Fact-checker work from the quote, so every number in the claim must appear in it. Use the "
+                "quote's exact figures, or quote the sentence that contains this number."
+            )
         check = json.loads(await deps.research.call("verify_quote", {"url": url, "quote": args["quote"]}))
         if not check.get("found"):
             emit(
@@ -87,7 +102,8 @@ async def research_chapter(
             )
             return f"Rejected: {check.get('reason', 'quote not found')} (similarity {check.get('similarity', 0)})."
         page = read_urls[url]
-        source_name = (args.get("source_name") or page.get("publisher") or web.publisher_for(url)).strip()
+        # Known publishers get one canonical name, so references read the same across chapters.
+        source_name = web.publisher_for(url, (args.get("source_name") or page.get("publisher") or "").strip())
         ev = Evidence(
             id=f"E{len(evidence) + 1}",
             fact_need_id=args.get("fact_need_id"),
