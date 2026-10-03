@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked
+
+      - name: Lint
+        run: |
+          uv run ruff check src tests ../scripts
+          uv run ruff format --check src tests ../scripts
+
+      # No API keys needed: the end-to-end test uses a fake Claude client and canned web pages.
+      # Also grades the committed sample book against the brief and checks the README diagram.
+      - name: Tests
+        run: uv run pytest
