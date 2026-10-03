@@ -389,14 +389,18 @@ Cut order if time is short: stretch first, then the Report's cost tab (numbers s
 
 ## 15. Current status
 
-Built as a spike/scaffold, not yet run against the LLM:
-- Python project (uv, Python 3.12) with anthropic 1.11, langgraph 1.2, mcp 2.3, FastAPI, Tavily.
-- `config.yaml`, `config.py`, domain models, graph state.
-- LLM wrapper with role routing, structured outputs, bounded tool loop with caching, cost events. **Every SDK call shape verified against the installed SDK** (`beta.messages.parse` with `output_format`, `fallbacks`, `cache_control`, `output_config.effort`).
-- research-mcp server, tested over stdio and in-process, plus MCP client.
-- All 6 agent modules and prompts, lint, renderer, `scripts/dev_usage.py`.
+*Updated Saturday 3 October 2026, evening.*
 
-Repo hygiene is done (section 12). Not yet built: graph wiring and routers, runner, store, scorecard, pricing module and routing profiles, API, CLI, replay, tests, frontend, README.
+**M1 (core engine) and M1.5 (first push) are done.**
+- Book graph with `Send` fan-out and the chapter subgraph; plain-Python routers with every stop condition in section 4.4; code safety net; runner recording `events.jsonl` and `run_report.json`; scorecard; `bookwriter run | report | graph | mcp`.
+- `pricing.py` shared by the runtime and `scripts/dev_usage.py`, prices in `config.yaml`; `showcase` and `dev` routing profiles; per-run cost cap.
+- Tavily Extract fallback on 403/406/429; links count as working through either route; reference titles cleaned.
+- 69 tests, including a fake-LLM end-to-end run that drives every loop, the scorecard on the committed sample book, and a check that the README diagram matches the graph. CI on every push.
+- README with quick start, generated agent graph, citation pipeline, measured costs and MCP setup.
+
+**Measured, not estimated (section 8.3):** four `dev` runs cost $3.42 in total. The full three-chapter `dev` book took 5 minutes and $1.61 (Researcher $0.62, Writer $0.50, Editor $0.19, Fact-checker $0.18, Planner, tagger and Chief Editor $0.12 together). The three single-chapter runs before it found and fixed lint false positives on names like "UPI123Pay", a sentence splitter that broke on "Dr.", claims that said more than their quotes, and Editor rules that contradicted the Writer's. The sample book in `docs/sample-output/` is from the full `dev` run.
+
+**Next:** the single `showcase` run (estimated $3-4 from the `dev` measurements), then M2 (service) and M3 (dashboard).
 
 ---
 
